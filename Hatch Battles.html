@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)file:///C:/Users/ckyri/Desktop/eggmaker/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hatch Battles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    user-select: none; overflow-x: hidden; padding-bottom: 40px;
+  }
+  h1 {
+    font-size: 2.4rem; font-weight: 700; margin-top: 20px;
+    background: linear-gradient(135deg, #ffd700, #ff6b6b, #ee5a24);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: #8888aa; font-size: 0.95rem; margin-bottom: 15px; font-family: 'Inter', sans-serif; }
+  .dual-container { display: flex; gap: 10px; justify-content: center; align-items: flex-start; padding: 0 10px; max-width: 1400px; flex-wrap: nowrap; }
+  .team-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 520px; }
+  .team-label {
+    width: 100%; text-align: center; font-size: 0.8rem; color: #888;
+    font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+    padding-bottom: 4px;
+  }
+  .team-label.t1 { color: #48cae4; }
+  .team-label.t2 { color: #ff6b6b; }
+  .vs-divider {
+    display: flex; align-items: center; font-size: 1.5rem; font-weight: 800;
+    color: #ff6b6b; text-shadow: 0 0 15px rgba(255,107,107,0.4);
+    padding: 0 5px;
+  }
+  .randomise-all {
+    padding: 10px 28px; border-radius: 30px;
+    border: 2px solid rgba(255,255,255,0.12); background: transparent;
+    color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.85rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-top: 5px;
+  }
+  .randomise-all:hover { border-color: #ffd700; color: #ffd700; }
+  .egg-panel {
+    background: rgba(255,255,255,0.04); backdrop-filter: blur(10px);
+    border-radius: 20px; padding: 16px; width: 245px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .panel-header { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
+  .panel-title { font-size: 1.1rem; color: #ffd700; font-weight: 600; }
+  .rand-btn {
+    padding: 5px 14px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.12);
+    background: transparent; color: #888; font-family: 'Fredoka', sans-serif;
+    font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .rand-btn:hover { border-color: #4cc9f0; color: #4cc9f0; }
+  .egg-holder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .egg-container { position: relative; width: 160px; height: 200px; display: flex; align-items: center; justify-content: center; }
+  .egg {
+    position: relative;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transition: width 0.3s, height 0.3s, background 0.3s;
+    overflow: hidden;
+  }
+  .egg .shine {
+    position: absolute; width: 28%; height: 16%; background: rgba(255,255,255,0.2);
+    border-radius: 50%; top: 13%; left: 16%; transform: rotate(-30deg); pointer-events: none; z-index: 3;
+  }
+  .egg .accent-band {
+    position: absolute; width: 100%; height: 20%; bottom: 28%; left: 0;
+    overflow: hidden; opacity: 0.55; pointer-events: none;
+  }
+  .egg .spots { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+  .egg .spot { position: absolute; border-radius: 50%; opacity: 0.3; }
+  .crack-svg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 4; opacity: 0; transition: opacity 0.3s;
+  }
+  .egg.wobbling { animation: wobble 0.12s ease-in-out infinite alternate; }
+  @keyframes wobble { 0% { transform: rotate(-5deg) translateX(-2px); } 100% { transform: rotate(5deg) translateX(2px); } }
+  .nest {
+    width: 90px; height: 20px;
+    background: radial-gradient(ellipse, #8B6914, #6B4E12);
+    border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .controls-grid { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .control-group label {
+    display: block; font-size: 0.72rem; color: #aaa; margin-bottom: 6px;
+    font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .option-row { display: flex; gap: 6px; }
+  .opt-btn {
+    flex: 1; padding: 9px 4px; border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+    color: #999; font-family: 'Fredoka', sans-serif; font-size: 0.82rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .opt-btn:hover { border-color: rgba(255,215,0,0.4); color: #ddd; }
+  .opt-btn.selected { background: #ffd700; border-color: #ffd700; color: #1a1a2e; }
+  .limb-btn {
+    flex: 1; padding: 7px 2px; border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+    color: #999; font-family: 'Fredoka', sans-serif; font-size: 0.75rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; line-height: 1.2;
+  }
+  .limb-btn:hover { border-color: rgba(255,215,0,0.4); color: #ddd; }
+  .limb-btn.selected { background: #ffd700; border-color: #ffd700; color: #1a1a2e; }
+  .limb-btn .ln { font-size: 1rem; display: block; }
+  .limb-btn .ld { font-size: 0.55rem; opacity: 0.7; }
+
+
+  .hatch-btn {
+    padding: 16px 60px; border-radius: 50px; border: none;
+    background: linear-gradient(135deg, #ffd700, #ff6b6b);
+    color: #1a1a2e; font-family: 'Fredoka', sans-serif;
+    font-size: 1.4rem; font-weight: 700; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 5px 30px rgba(255,215,0,0.3);
+    letter-spacing: 1px; margin-top: 15px;
+  }
+  .hatch-btn:hover { transform: scale(1.05); box-shadow: 0 5px 40px rgba(255,215,0,0.5); }
+  .hatch-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .results-row { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .result-card {
+    display: none; flex-direction: column; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+    border-radius: 22px; padding: 25px 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center; animation: fadeUp 0.6s ease-out; width: 240px;
+  }
+  .result-card.visible { display: flex; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .result-animal-svg {
+    width: 180px; height: 180px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .result-animal-svg svg { width: 100%; height: 100%; }
+  @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+  .result-name {
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(135deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .result-stats {
+    width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 4px;
+  }
+  .stat-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .stat-label {
+    font-family: 'Inter', sans-serif; font-size: 0.7rem; color: #888;
+    text-transform: uppercase; letter-spacing: 0.5px; width: 70px; text-align: right; flex-shrink: 0;
+  }
+  .stat-bar-bg {
+    flex: 1; height: 14px; background: rgba(255,255,255,0.08); border-radius: 7px; overflow: hidden;
+  }
+  .stat-bar-fill {
+    height: 100%; border-radius: 7px; transition: width 0.6s ease-out;
+  }
+  .stat-value {
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600;
+    color: #ddd; width: 42px; flex-shrink: 0;
+  }
+  .stat-count {
+    text-align: center; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #aaa; margin-top: 2px;
+  }
+  .stat-count span { color: #ffd700; font-weight: 700; font-size: 1.1rem; }
+  .try-again-btn, .battle-btn-bottom {
+    padding: 12px 40px; border-radius: 30px;
+    border: 2px solid rgba(255,255,255,0.15); background: transparent;
+    color: #ccc; font-family: 'Fredoka', sans-serif; font-size: 1.05rem;
+    cursor: pointer; transition: all 0.2s; margin-top: 15px;
+  }
+  .try-again-btn:hover { border-color: #ffd700; color: #ffd700; }
+  .battle-btn-bottom {
+    background: linear-gradient(135deg, #e74c3c, #c0392b); border: none;
+    color: #fff; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px;
+    padding: 14px 50px; box-shadow: 0 5px 25px rgba(231,76,60,0.4);
+  }
+  .battle-btn-bottom:hover { transform: scale(1.05); box-shadow: 0 5px 35px rgba(231,76,60,0.6); }
+
+  /* Battle Arena */
+  .battle-arena {
+    display: none; flex-direction: column; align-items: center; gap: 12px;
+    width: 100%; max-width: 850px; padding: 20px;
+  }
+  .battle-arena.visible { display: flex; }
+  .arena-header {
+    font-size: 1.4rem; font-weight: 700; color: #ff6b6b;
+    font-family: 'Fredoka', sans-serif; letter-spacing: 1px;
+  }
+  .battle-stage {
+    position: relative; width: 100%; height: 400px;
+    background: linear-gradient(180deg, rgba(15,12,41,0.8), rgba(30,30,60,0.6));
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .stage-ground {
+    position: absolute; bottom: 0; width: 100%; height: 60px;
+    background: linear-gradient(180deg, rgba(40,60,30,0.4), rgba(30,50,20,0.6));
+    border-radius: 0 0 16px 16px;
+  }
+  .stage-unit {
+    position: absolute; display: flex; flex-direction: column; align-items: center;
+    transition: opacity 0.5s;
+  }
+  .stage-unit.dead { opacity: 0.15; }
+  .stage-unit-svg { width: 50px; height: 50px; }
+  .stage-unit-svg svg { width: 100%; height: 100%; }
+  .stage-unit-svg.flipped svg { transform: scaleX(-1); }
+  .stage-hp {
+    width: 46px; height: 5px; background: rgba(0,0,0,0.5);
+    border-radius: 3px; overflow: hidden; margin-top: 2px;
+  }
+  .stage-hp-fill {
+    height: 100%; border-radius: 3px;
+    background: #2ecc71; transition: width 0.15s;
+  }
+  .stage-name {
+    font-family: 'Inter', sans-serif; font-size: 0.5rem; color: rgba(255,255,255,0.6);
+    white-space: nowrap; margin-top: 1px;
+  }
+  .stage-dmg-popup {
+    position: absolute; font-family: 'Inter', sans-serif;
+    font-weight: 800; font-size: 0.75rem; pointer-events: none;
+    animation: stageDmgFloat 0.8s ease-out forwards; z-index: 20;
+  }
+  @keyframes stageDmgFloat {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-25px) scale(0.8); }
+  }
+  .stage-dmg-popup.crit-pop { color: #ffd700; font-size: 1rem; }
+  .stage-dmg-popup.strong-pop { color: #e67e22; }
+  .stage-dmg-popup.weak-pop { color: #888; }
+  .stage-dmg-popup.miss-pop { color: #555; }
+  .stage-dmg-popup.normal-pop { color: #ccc; }
+  .round-score {
+    display: flex; align-items: center; gap: 15px;
+    font-family: 'Fredoka', sans-serif;
+  }
+  .score-t1, .score-t2 {
+    font-size: 2rem; font-weight: 800; width: 40px; text-align: center;
+  }
+  .score-t1 { color: #48cae4; }
+  .score-t2 { color: #ff6b6b; }
+  .score-label { color: #555; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+  .arena-round {
+    font-size: 1.2rem; font-weight: 700; color: #ffd700;
+    font-family: 'Fredoka', sans-serif;
+  }
+  .arena-winner {
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(135deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: fadeUp 0.5s ease-out;
+  }
+  .arena-controls {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
+  }
+  .speed-btn {
+    padding: 5px 14px; border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.12); background: transparent;
+    color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .speed-btn:hover { border-color: #48cae4; color: #48cae4; }
+  .speed-btn.active { background: #48cae4; border-color: #48cae4; color: #1a1a2e; }
+  .rematch-btn {
+    padding: 5px 16px; border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.12); background: transparent;
+    color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .rematch-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
+  /* Matchup chart */
+  .mode-toggle {
+    position: fixed; bottom: 60px; left: 20px; z-index: 50;
+    padding: 10px 18px; border-radius: 30px;
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #aaa; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .mode-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .mult-toggle {
+    position: fixed; bottom: 20px; left: 20px; z-index: 50;
+    padding: 10px 18px; border-radius: 30px;
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #aaa; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .mult-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .mult-toggle.on { border-color: #ffd700; color: #ffd700; }
+  .matchup-toggle {
+    position: fixed; bottom: 20px; right: 20px; z-index: 50;
+    padding: 10px 18px; border-radius: 30px;
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #aaa; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .matchup-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .matchup-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  .matchup-overlay.visible { display: flex; }
+  .matchup-panel {
+    background: #1a1a2e; border-radius: 16px; padding: 24px;
+    max-width: 95vw; max-height: 90vh; overflow: auto;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .matchup-title {
+    font-size: 1.3rem; font-weight: 700; color: #ffd700; margin-bottom: 4px;
+  }
+  .matchup-subtitle {
+    font-size: 0.75rem; color: #666; font-family: 'Inter', sans-serif; margin-bottom: 14px;
+  }
+  .matchup-close {
+    float: right; background: none; border: none; color: #888; font-size: 1.5rem;
+    cursor: pointer; padding: 0 6px; line-height: 1;
+  }
+  .matchup-close:hover { color: #fff; }
+  .matchup-table {
+    border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.7rem;
+    width: 100%;
+  }
+  .matchup-table th {
+    padding: 6px 8px; color: #aaa; font-weight: 600; text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+  }
+  .matchup-table th.corner { background: transparent; }
+  .matchup-table th.col-header {
+    writing-mode: horizontal-tb; font-size: 0.65rem;
+  }
+  .matchup-table td {
+    padding: 5px 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);
+    font-weight: 600; font-size: 0.7rem; white-space: nowrap;
+  }
+  .matchup-table .row-header {
+    text-align: right; color: #aaa; font-weight: 600; padding-right: 10px;
+    border: none;
+  }
+  .matchup-table .win1 { background: rgba(72,202,228,0.15); color: #48cae4; }
+  .matchup-table .win2 { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+  .matchup-table .draw { background: rgba(255,215,0,0.1); color: #ffd700; }
+  .matchup-table .mirror { background: rgba(255,255,255,0.03); color: #666; }
+  .matchup-legend {
+    display: flex; gap: 16px; margin-top: 10px; font-size: 0.7rem;
+    font-family: 'Inter', sans-serif; color: #888;
+  }
+  .matchup-legend span { font-weight: 600; }
+  .legend-t1 { color: #48cae4; }
+  .legend-t2 { color: #ff6b6b; }
+
+  .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+  .particle { position: absolute; border-radius: 50%; animation: particleFly 1s ease-out forwards; }
+  @keyframes particleFly { 0% { opacity:1; transform: translate(0,0) scale(1); } 100% { opacity:0; transform: translate(var(--dx),var(--dy)) scale(0); } }
+  .shell-fragment { position: absolute; border-radius: 30% 70% 50% 50%; animation: shellFly 0.8s ease-out forwards; }
+  @keyframes shellFly { 0% { opacity:1; transform: translate(0,0) rotate(0deg); } 100% { opacity:0; transform: translate(var(--dx),var(--dy)) rotate(var(--rot)); } }
+  @media (max-width: 1100px) {
+    .dual-container { flex-wrap: wrap; }
+  }
+  /* Challenge system */
+  .btn-row {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 5px;
+  }
+  .chal-btn {
+    padding: 8px 20px; border-radius: 25px;
+    border: 2px solid rgba(255,255,255,0.12); background: transparent;
+    color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .chal-btn:hover { border-color: #4cc9f0; color: #4cc9f0; }
+  .chal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;
+  }
+  .chal-overlay.visible { display: flex; }
+  .chal-panel {
+    background: #1a1a2e; border-radius: 20px; padding: 30px;
+    max-width: 380px; width: 100%; border: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    position: relative;
+  }
+  .chal-title { font-size: 1.3rem; font-weight: 700; color: #ffd700; }
+  .chal-desc { font-size: 0.8rem; color: #888; font-family: 'Inter', sans-serif; text-align: center; line-height: 1.5; }
+  .chal-code {
+    padding: 14px 30px; background: rgba(0,0,0,0.4); border-radius: 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 2.2rem; font-weight: 700;
+    color: #4cc9f0; letter-spacing: 8px; border: 1px solid rgba(76,201,240,0.3);
+    user-select: all;
+  }
+  .chal-input {
+    width: 180px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
+    color: #fff; text-align: center; letter-spacing: 8px;
+    border: 1px solid rgba(255,255,255,0.15); outline: none;
+  }
+  .chal-input:focus { border-color: #4cc9f0; }
+  .chal-action {
+    padding: 12px 35px; border-radius: 25px; border: none;
+    background: linear-gradient(135deg, #4cc9f0, #3a86ff);
+    color: #fff; font-family: 'Fredoka', sans-serif; font-size: 1rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .chal-action:hover { transform: scale(1.05); }
+  .chal-close {
+    position: absolute; top: 12px; right: 16px; background: none; border: none;
+    color: #888; font-size: 1.5rem; cursor: pointer;
+  }
+  .chal-close:hover { color: #fff; }
+  .chal-status { font-size: 0.8rem; font-family: 'Inter', sans-serif; }
+  .chal-egg-picker {
+    display: flex; flex-direction: column; gap: 10px; width: 100%;
+  }
+  .chal-egg-picker .control-group label {
+    display: block; font-size: 0.72rem; color: #aaa; margin-bottom: 5px;
+    font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .chal-egg-picker .option-row { display: flex; gap: 5px; }
+  .chal-egg-picker .opt-btn, .chal-egg-picker .limb-btn {
+    flex: 1; padding: 8px 3px; border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+    color: #999; font-family: 'Fredoka', sans-serif; font-size: 0.75rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .chal-egg-picker .opt-btn:hover, .chal-egg-picker .limb-btn:hover { border-color: rgba(255,215,0,0.4); color: #ddd; }
+  .chal-egg-picker .opt-btn.selected, .chal-egg-picker .limb-btn.selected { background: #ffd700; border-color: #ffd700; color: #1a1a2e; }
+
+  @media (max-width: 800px) {
+    h1 { font-size: 1.7rem; }
+    .egg-panel { width: 95vw; }
+    .dual-container { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<h1>Hatch Battles</h1>
+<p class="subtitle">Craft two eggs. One vs one.</p>
+<div class="dual-container" id="dualContainer"><div class="team-group"><div class="team-label t1">Team 1</div><div class="egg-panel" id="panel0">
+    <div class="panel-header">
+      <div class="panel-title">Egg 1</div>
+      <button class="rand-btn" id="rand0">Randomise</button>
+    </div>
+    <div class="egg-holder">
+      <div class="egg-container"><div class="egg" id="egg0" style="width: 110px; height: 142px; background: rgb(110, 110, 110); box-shadow: rgba(0, 0, 0, 0.25) -13px -8px 18px inset, rgba(255, 255, 255, 0.14) 8px 8px 20px inset, rgba(0, 0, 0, 0.28) 0px 13px 37px;">
+        <div class="accent-band" id="band0"><div style="position:absolute;width:140%;height:100%;left:-20%;top:0;background:#B0B0B0;border-radius:50%;"></div></div>
+        <div class="spots" id="spots0"><div class="spot" style="width: 9.38237px; height: 9.38237px; background: rgb(176, 176, 176); left: 72.3672%; top: 44.692%;"></div><div class="spot" style="width: 13.8639px; height: 13.8639px; background: rgb(176, 176, 176); left: 75.6701%; top: 68.9505%;"></div><div class="spot" style="width: 11.8893px; height: 11.8893px; background: rgb(176, 176, 176); left: 39.3112%; top: 28.703%;"></div><div class="spot" style="width: 13.375px; height: 13.375px; background: rgb(176, 176, 176); left: 33.6584%; top: 51.2946%;"></div><div class="spot" style="width: 12.3651px; height: 12.3651px; background: rgb(176, 176, 176); left: 18.8507%; top: 36.7537%;"></div><div class="spot" style="width: 7.6192px; height: 7.6192px; background: rgb(176, 176, 176); left: 24.8989%; top: 76.4842%;"></div></div>
+        <div class="shine"></div>
+        <svg class="crack-svg" id="cracks0" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div></div>
+      <div class="nest"></div>
+    </div>
+    <div class="controls-grid">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="size0">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="dens0">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="limb0">
+          <button class="limb-btn" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn selected" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
+        </div>
+      </div>
+    </div>
+  </div><div class="egg-panel" id="panel1" style="display: none;">
+    <div class="panel-header">
+      <div class="panel-title">Egg 2</div>
+      <button class="rand-btn" id="rand1">Randomise</button>
+    </div>
+    <div class="egg-holder">
+      <div class="egg-container"><div class="egg" id="egg1" style="width: 110px; height: 142px; background: rgb(123, 157, 183); box-shadow: rgba(0, 0, 0, 0.15) -8px -4px 12px inset, rgba(255, 255, 255, 0.18) 8px 8px 20px inset, rgba(0, 0, 0, 0.2) 0px 8px 25px;">
+        <div class="accent-band" id="band1"><div style="position:absolute;width:140%;height:100%;left:-20%;top:0;background:#B8D4E3;border-radius:50%;"></div></div>
+        <div class="spots" id="spots1"><div class="spot" style="width: 11.1138px; height: 11.1138px; background: rgb(184, 212, 227); left: 46.4541%; top: 55.7206%;"></div><div class="spot" style="width: 8.31764px; height: 8.31764px; background: rgb(184, 212, 227); left: 48.9325%; top: 23.0587%;"></div></div>
+        <div class="shine"></div>
+        <svg class="crack-svg" id="cracks1" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div></div>
+      <div class="nest"></div>
+    </div>
+    <div class="controls-grid">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="size1">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="dens1">
+          <button class="opt-btn selected" data-val="0">Light</button>
+          <button class="opt-btn" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="limb1">
+          <button class="limb-btn selected" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
+        </div>
+      </div>
+    </div>
+  </div></div><div class="vs-divider">VS</div><div class="team-group"><div class="team-label t2">Team 2</div><div class="egg-panel" id="panel2">
+    <div class="panel-header">
+      <div class="panel-title">Egg 3</div>
+      <button class="rand-btn" id="rand2">Randomise</button>
+    </div>
+    <div class="egg-holder">
+      <div class="egg-container"><div class="egg" id="egg2" style="width: 80px; height: 105px; background: rgb(44, 44, 44); box-shadow: rgba(0, 0, 0, 0.35) -18px -12px 24px inset, rgba(255, 255, 255, 0.098) 8px 8px 20px inset, rgba(0, 0, 0, 0.36) 0px 18px 49px;">
+        <div class="accent-band" id="band2"><div style="position:absolute;width:140%;height:100%;left:-20%;top:0;background:#5C5C5C;border-radius:50%;"></div></div>
+        <div class="spots" id="spots2"><div class="spot" style="width: 12.2129px; height: 12.2129px; background: rgb(92, 92, 92); left: 66.7339%; top: 72.8518%;"></div><div class="spot" style="width: 7.20289px; height: 7.20289px; background: rgb(92, 92, 92); left: 40.4232%; top: 32.2059%;"></div><div class="spot" style="width: 5.72152px; height: 5.72152px; background: rgb(92, 92, 92); left: 26.3555%; top: 11.7364%;"></div><div class="spot" style="width: 9.88528px; height: 9.88528px; background: rgb(92, 92, 92); left: 45.0541%; top: 43.1767%;"></div><div class="spot" style="width: 9.88239px; height: 9.88239px; background: rgb(92, 92, 92); left: 68.3245%; top: 31.644%;"></div><div class="spot" style="width: 11.1521px; height: 11.1521px; background: rgb(92, 92, 92); left: 27.3617%; top: 36.6869%;"></div><div class="spot" style="width: 8.67732px; height: 8.67732px; background: rgb(92, 92, 92); left: 59.5766%; top: 52.8797%;"></div><div class="spot" style="width: 9.44496px; height: 9.44496px; background: rgb(92, 92, 92); left: 38.2816%; top: 48.6324%;"></div></div>
+        <div class="shine"></div>
+        <svg class="crack-svg" id="cracks2" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div></div>
+      <div class="nest"></div>
+    </div>
+    <div class="controls-grid">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="size2">
+          <button class="opt-btn selected" data-val="0">Small</button>
+          <button class="opt-btn" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="dens2">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn" data-val="1">Normal</button>
+          <button class="opt-btn selected" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="limb2">
+          <button class="limb-btn" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn selected" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
+        </div>
+      </div>
+    </div>
+  </div><div class="egg-panel" id="panel3" style="display: none;">
+    <div class="panel-header">
+      <div class="panel-title">Egg 4</div>
+      <button class="rand-btn" id="rand3">Randomise</button>
+    </div>
+    <div class="egg-holder">
+      <div class="egg-container"><div class="egg" id="egg3" style="width: 145px; height: 188px; background: rgb(196, 163, 115); box-shadow: rgba(0, 0, 0, 0.25) -13px -8px 18px inset, rgba(255, 255, 255, 0.14) 8px 8px 20px inset, rgba(0, 0, 0, 0.28) 0px 13px 37px;">
+        <div class="accent-band" id="band3"><div style="position:absolute;width:140%;height:100%;left:-20%;top:0;background:#8B6C4A;border-radius:50%;"></div></div>
+        <div class="spots" id="spots3"><div class="spot" style="width: 8.03096px; height: 8.03096px; background: rgb(139, 108, 74); left: 70.5519%; top: 43.7553%;"></div><div class="spot" style="width: 7.61286px; height: 7.61286px; background: rgb(139, 108, 74); left: 50.8996%; top: 19.9479%;"></div><div class="spot" style="width: 9.30835px; height: 9.30835px; background: rgb(139, 108, 74); left: 17.0231%; top: 69.1625%;"></div><div class="spot" style="width: 11.7623px; height: 11.7623px; background: rgb(139, 108, 74); left: 29.6956%; top: 69.4992%;"></div></div>
+        <div class="shine"></div>
+        <svg class="crack-svg" id="cracks3" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div></div>
+      <div class="nest"></div>
+    </div>
+    <div class="controls-grid">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="size3">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn" data-val="1">Medium</button>
+          <button class="opt-btn selected" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="dens3">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="limb3">
+          <button class="limb-btn" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn selected" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
+        </div>
+      </div>
+    </div>
+  </div></div></div>
+<div class="btn-row">
+  <button class="randomise-all" id="randomiseAll">Randomise All</button>
+  <button class="chal-btn" id="createChalBtn">Create Challenge</button>
+  <button class="chal-btn" id="acceptChalBtn">Accept Challenge</button>
+</div>
+<button class="hatch-btn" id="hatchBtn">Hatch Both!</button>
+
+<!-- Create Challenge overlay -->
+<div class="chal-overlay" id="createChalOverlay">
+  <div class="chal-panel">
+    <button class="chal-close" id="createChalClose">×</button>
+    <div class="chal-title">Create Challenge</div>
+    <div class="chal-desc">Pick your egg, then confirm to get a code.</div>
+    <div class="chal-egg-picker" id="createPicker">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="chalSize">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="chalDens">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="chalType">
+          <button class="limb-btn" data-val="0">🌊 Ocean</button>
+          <button class="limb-btn" data-val="1">🏜️ Desert</button>
+          <button class="limb-btn selected" data-val="2">🌿 Jungle</button>
+          <button class="limb-btn" data-val="3">🌪️ Air</button>
+        </div>
+      </div>
+    </div>
+    <button class="chal-action" id="createChalConfirm">Confirm</button>
+    <div class="chal-code" id="chalCode" style="display:none;"></div>
+    <button class="chal-action" id="chalCopyBtn" style="display:none;">Copy Code</button>
+    <div class="chal-status" id="createChalStatus"></div>
+  </div>
+</div>
+
+<!-- Accept Challenge overlay -->
+<div class="chal-overlay" id="acceptChalOverlay">
+  <div class="chal-panel">
+    <button class="chal-close" id="acceptChalClose">×</button>
+    <div class="chal-title" id="acceptTitle">Accept Challenge</div>
+    <div class="chal-desc" id="acceptDesc">Enter your opponent's 4-digit code.</div>
+    <input class="chal-input" id="chalInput" placeholder="0000" maxlength="4">
+    <button class="chal-action" id="acceptChalJoin">Join</button>
+    <div class="chal-egg-picker" id="acceptPicker" style="display:none;">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="acceptSize">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="acceptDens">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="acceptType">
+          <button class="limb-btn" data-val="0">🌊 Ocean</button>
+          <button class="limb-btn" data-val="1">🏜️ Desert</button>
+          <button class="limb-btn selected" data-val="2">🌿 Jungle</button>
+          <button class="limb-btn" data-val="3">🌪️ Air</button>
+        </div>
+      </div>
+    </div>
+    <button class="chal-action" id="acceptChalConfirm" style="display:none;">Fight!</button>
+    <div class="chal-status" id="acceptChalStatus"></div>
+  </div>
+</div>
+<div class="results-row" id="resultsRow">
+  <div class="result-card" id="result0">
+    <div class="result-animal-svg" id="resultSvg0"></div>
+    <div class="result-name" id="resultName0"></div>
+    <div class="result-stats" id="resultStats0"></div>
+  </div>
+  <div class="result-card" id="result1">
+    <div class="result-animal-svg" id="resultSvg1"></div>
+    <div class="result-name" id="resultName1"></div>
+    <div class="result-stats" id="resultStats1"></div>
+  </div>
+  <div class="result-card" id="result2">
+    <div class="result-animal-svg" id="resultSvg2"></div>
+    <div class="result-name" id="resultName2"></div>
+    <div class="result-stats" id="resultStats2"></div>
+  </div>
+  <div class="result-card" id="result3">
+    <div class="result-animal-svg" id="resultSvg3"></div>
+    <div class="result-name" id="resultName3"></div>
+    <div class="result-stats" id="resultStats3"></div>
+  </div>
+</div>
+<button class="battle-btn-bottom" id="battleBtn" style="display:none;">Battle!</button>
+<div class="battle-arena" id="battleArena">
+  <div class="arena-header" id="arenaHeader">Battle!</div>
+  <div class="arena-controls" id="arenaControls">
+    <button class="speed-btn active" data-speed="1">1x</button>
+    <button class="speed-btn" data-speed="2">2x</button>
+    <button class="speed-btn" data-speed="4">4x</button>
+    <button class="rematch-btn" id="rematchBtn">Rematch</button>
+  </div>
+  <div class="round-score" id="roundScore">
+    <span class="score-t1" id="scoreT1">0</span>
+    <span class="score-label">Best of 3</span>
+    <span class="score-t2" id="scoreT2">0</span>
+  </div>
+  <div class="battle-stage" id="battleStage">
+    <div class="stage-ground"></div>
+  </div>
+  <div class="arena-round" id="arenaRound" style="display:none;"></div>
+  <div class="arena-winner" id="arenaWinner" style="display:none;"></div>
+</div>
+<button class="try-again-btn" id="tryAgainBtn" style="display:none;">Make New Eggs</button>
+<button class="mode-toggle" id="modeToggle">Mode: 1v1</button>
+<button class="mult-toggle on" id="multToggle">RNG: ON</button>
+<button class="matchup-toggle" id="matchupToggle">Matchup Chart</button>
+<div class="matchup-overlay" id="matchupOverlay">
+  <div class="matchup-panel">
+    <button class="matchup-close" id="matchupClose">×</button>
+    <div class="matchup-title">Matchup Chart</div>
+    <div class="matchup-subtitle">All 81 battles simulated with base damage (no RNG). Row = Team 1, Column = Team 2.</div>
+    <div id="matchupTableContainer"></div>
+    <div class="matchup-legend">
+      <div><span class="legend-t1">Blue</span> = Row wins</div>
+      <div><span class="legend-t2">Red</span> = Column wins</div>
+      <div>Shows: survivors remaining / battle time</div>
+    </div>
+  </div>
+</div>
+<div class="particles" id="particles"></div>
+
+<script>
+// ===== ANIMALS (with realistic colours) =====
+// Key: "size-density-type" where type: 0=Ocean, 1=Desert, 2=Jungle, 3=Air
+const ANIMALS = {
+  // Small (6 units)
+  "0-0-0": { name: "Clownfish",      m: '#FF6B00', a: '#FFFFFF' },
+  "0-0-1": { name: "Scorpion",       m: '#C4A032', a: '#8B6C4A' },
+  "0-0-2": { name: "Dart Frog",      m: '#3498DB', a: '#E74C3C' },
+  "0-0-3": { name: "Hummingbird",    m: '#2EAD65', a: '#E74C3C' },
+  "0-1-0": { name: "Seahorse",       m: '#D4A017', a: '#E8C547' },
+  "0-1-1": { name: "Meerkat",        m: '#D4A373', a: '#F5E0C3' },
+  "0-1-2": { name: "Cat",            m: '#D4853B', a: '#F5E0C3' },
+  "0-1-3": { name: "Robin",          m: '#7B6249', a: '#E25822' },
+  "0-2-0": { name: "Pufferfish",     m: '#D4A017', a: '#8B6C4A' },
+  "0-2-1": { name: "Beetle",         m: '#1A5C1A', a: '#0E380E' },
+  "0-2-2": { name: "Hedgehog",       m: '#8B6C4A', a: '#C4A87C' },
+  "0-2-3": { name: "Bat",            m: '#2C2C2C', a: '#5C5C5C' },
+  // Medium (3 units)
+  "1-0-0": { name: "Dolphin",        m: '#7B9DB7', a: '#B8D4E3' },
+  "1-0-1": { name: "Falcon",         m: '#5D6D7E', a: '#F5E6CA' },
+  "1-0-2": { name: "Deer",           m: '#A0785A', a: '#F5E6CA' },
+  "1-0-3": { name: "Dragonfly",      m: '#3498DB', a: '#2ECC71' },
+  "1-1-0": { name: "Salmon",         m: '#C77B8B', a: '#E8A0B0' },
+  "1-1-1": { name: "Human",          m: '#D2A67D', a: '#4A3728' },
+  "1-1-2": { name: "Wolf",           m: '#6E6E6E', a: '#B0B0B0' },
+  "1-1-3": { name: "Eagle",          m: '#5C4033', a: '#F5F5F0' },
+  "1-2-0": { name: "Moray Eel",      m: '#3D5C3A', a: '#8B9862' },
+  "1-2-1": { name: "Cassowary",      m: '#1A1A2E', a: '#3498DB' },
+  "1-2-2": { name: "Bear",           m: '#8B5E3C', a: '#D2B48C' },
+  "1-2-3": { name: "Swan",           m: '#F8F8FF', a: '#E67E22' },
+  // Large (1 unit)
+  "2-0-0": { name: "Manta Ray",      m: '#2C3E50', a: '#ECF0F1' },
+  "2-0-1": { name: "Flamingo",       m: '#FF69B4', a: '#FF1493' },
+  "2-0-2": { name: "Giraffe",        m: '#D4A55A', a: '#8B5E3C' },
+  "2-0-3": { name: "Atlas Moth",     m: '#A0522D', a: '#F5DEB3' },
+  "2-1-0": { name: "Shark",          m: '#6B7B8D', a: '#D5DDE5' },
+  "2-1-1": { name: "Camel",          m: '#C4A373', a: '#8B6C4A' },
+  "2-1-2": { name: "Horse",          m: '#8B5A2B', a: '#4A3728' },
+  "2-1-3": { name: "Ostrich",        m: '#7B6B5D', a: '#F0E6D3' },
+  "2-2-0": { name: "Anaconda",       m: '#3D5C2A', a: '#8B7355' },
+  "2-2-1": { name: "Tortoise",       m: '#3D5C3A', a: '#8B6C4A' },
+  "2-2-2": { name: "Elephant",       m: '#8D8D8D', a: '#5C5C5C' },
+  "2-2-3": { name: "Hercules Beetle",m: '#4A3728', a: '#C4A032' },
+};
+
+// ===== NAME GENERATOR =====
+const FIRST_NAMES = ['Jim','Bob','Dave','Frank','Steve','Larry','Carl','Ted','Phil','Roy','Ed','Gus','Hank','Walt','Ned','Lou','Rex','Bud','Vince','Doug','Earl','Ray','Sal','Mick','Tony','Clive','Bert','Reg','Stan','Alf','Percy','Wilbur','Chester','Murray','Nigel','Angus','Boris','Cecil','Dennis','Eugene','Floyd','Gerald','Harvey','Ivan','Jerome','Keith','Leonard','Milton','Norman','Oscar','Ralph','Sidney','Trevor','Vernon','Wayne','Brutus','Jasper','Magnus','Rufus','Leroy','Blythe','Crispin'];
+const ANIMAL_ADJECTIVES = {
+  "Slug": ['slimy','gooey','oozy','squidgy','slippery','mushy','drippy','goopy'],
+  "Clownfish": ['stripey','cheeky','vibrant','zippy','bright','feisty','perky','snappy'],
+  "Seahorse": ['curly','dainty','spiny','regal','tiny','prancy','swirly','fancy'],
+  "Flying Fish": ['soaring','gliding','leaping','breezy','splashy','flashy','dashy','zippy'],
+  "Salmon": ['leaping','silvery','wild','rugged','swift','mighty','jumpy','plucky'],
+  "Moray Eel": ['lurking','sneaky','toothy','slippery','shadowy','murky','spooky','creepy'],
+  "Manta Ray": ['gliding','majestic','sweeping','silent','graceful','soaring','breezy','flappy'],
+  "Shark": ['chompy','finned','toothy','steely','snappy','bitey','nippy','hungry'],
+  "Anaconda": ['slithery','coiled','crushing','massive','sneaky','winding','scaly','mighty'],
+  "Hummingbird": ['buzzy','zippy','tiny','flickery','darting','sparkly','swift','dizzy'],
+  "Robin": ['chirpy','plucky','perky','cheery','spritely','jolly','peppy','nippy'],
+  "Penguin": ['waddly','chilly','pudgy','dapper','stumpy','slippy','frosty','dumpy'],
+  "Falcon": ['swoopy','sharp','speedy','piercing','keen','blazing','snappy','nippy'],
+  "Eagle": ['soaring','proud','fierce','regal','golden','mighty','noble','screamy'],
+  "Cassowary": ['angry','stompy','grumpy','menacing','charging','cranky','furious','scary'],
+  "Flamingo": ['leggy','pinky','prancing','fancy','strutting','sassy','lanky','swanky'],
+  "Swan": ['graceful','elegant','serene','gliding','regal','majestic','flowy','snowy'],
+  "Ostrich": ['lanky','speedy','leggy','gangly','towering','sprinting','goofy','striding'],
+  "Sugar Glider": ['gliding','fluffy','swoopy','cuddly','floaty','silky','bouncy','fuzzy'],
+  "Cat": ['sneaky','fluffy','lazy','slinky','sassy','pouncy','whiskery','scratchy'],
+  "Hedgehog": ['prickly','spiky','curly','snuffly','pointy','bristly','grumpy','stumpy'],
+  "Deer": ['prancing','graceful','nimble','gentle','dashing','leaping','bouncy','fancy'],
+  "Wolf": ['howling','growly','prowling','snarling','fierce','cunning','scruffy','snappy'],
+  "Bear": ['burly','grizzly','beefy','fuzzy','growly','husky','chunky','cuddly'],
+  "Giraffe": ['lanky','spotty','towering','stretchy','gangly','tall','leggy','lofty'],
+  "Horse": ['gallopy','swift','sturdy','prancing','breezy','clippy','cloppy','frisky'],
+  "Elephant": ['stompy','tusked','wrinkly','mighty','lumpy','trumpy','clumpy','dumpy'],
+  "Butterfly": ['fluttery','dainty','floaty','wispy','silky','airy','dusty','breezy'],
+  "Ant": ['tiny','mighty','busy','snappy','scrappy','nippy','zippy','gritty'],
+  "Beetle": ['shiny','tough','crunchy','hardy','glossy','stocky','clunky','chunky'],
+  "Dragonfly": ['buzzy','darting','shimmery','swift','zippy','flashy','glitzy','snazzy'],
+  "Mantis": ['sneaky','patient','deadly','stealthy','precise','twitchy','shifty','crafty'],
+  "Tortoise": ['ploddy','shelly','ancient','steady','grumpy','dozy','dusty','crusty'],
+  "Atlas Moth": ['dusty','fuzzy','fluttery','grand','velvety','ghostly','misty','musty'],
+  "Stick Insect": ['twiggy','lanky','skinny','gangly','bony','sneaky','tricky','sticky'],
+  "Hercules Beetle": ['horny','brawny','mighty','hulky','beefy','bulky','burly','buff'],
+  "Scorpion": ['stingy','snappy','skittery','sandy','crusty','crabby','pinchy','spiky'],
+  "Dart Frog": ['toxic','zippy','flashy','slimy','jumpy','bouncy','bright','tiny'],
+  "Meerkat": ['nosy','perky','diggy','sandy','alert','twitchy','squinty','scrappy'],
+  "Pufferfish": ['puffy','spiky','grumpy','bloaty','round','squishy','snappy','chubby'],
+  "Bat": ['swoopy','shadowy','squeaky','flappy','spooky','fuzzy','fangy','sneaky'],
+  "Dolphin": ['flippy','splashy','chatty','speedy','slippery','bouncy','smiley','playful'],
+  "Camel": ['humpy','dusty','grumpy','ploddy','sandy','spitty','lanky','stubborn'],
+};
+
+// Special overrides for specific names
+const NAME_OVERRIDES = {
+  'Blythe': 'Poopy',
+  'Crispin': 'Glorious',
+  'Jasper': 'Diddy',
+};
+
+// Alliterative adjectives grouped by starting letter
+const ALLIT = {
+  J: ['jolly','jumpy','jaunty','jazzy','jiggly','jittery'],
+  B: ['bouncy','burly','beefy','brash','brainy','bristly','bossy','breezy'],
+  D: ['dashing','dainty','daring','dizzy','dopey','dusty','dreamy','dapper'],
+  F: ['fierce','feisty','fluffy','flashy','frisky','funky','frosty','fancy'],
+  S: ['sneaky','slinky','sassy','speedy','slippery','snappy','scruffy','spooky','stocky','sparkly','swift','slimy'],
+  L: ['lazy','lanky','lumpy','lofty','loopy','lucky','lively','little'],
+  C: ['chunky','cheeky','cranky','crafty','cuddly','curly','crusty','clumsy','clippy'],
+  T: ['tiny','tough','tricky','twitchy','toothy','twiggy','tubby','thundering'],
+  E: ['eager','eerie','elegant','evil','electric'],
+  R: ['rowdy','regal','rugged','reckless','rusty','rascal','ruthless','rapid'],
+  G: ['grumpy','growly','glossy','gangly','goofy','gutsy','gentle','grand','grizzly'],
+  H: ['hungry','husky','hefty','hasty','happy','howling','hulking'],
+  M: ['mighty','massive','moody','misty','munchy','murky','mental','mad'],
+  N: ['nippy','nimble','nasty','nervy','noble','nutty','noisy'],
+  P: ['plucky','proud','prickly','prancy','pudgy','perky','peppy','prowling'],
+  W: ['wild','wily','waddly','wonky','wispy','wrinkly','wicked'],
+  A: ['angry','ancient','armored','agile','awesome'],
+  V: ['vicious','vast','vivid','velvety'],
+  K: ['keen','kooky'],
+  I: ['icy','itchy'],
+  O: ['ornery'],
+};
+
+const CAT_NAMES = ['Muffin','Poppy','Jesse','Amberleigh','Haglar','Jasper'];
+const HUMAN_NAMES = ['Jasper','Crispin','Blythe'];
+
+function generateName(animalName, unitIndex) {
+  // Cats get their own fixed names, one each
+  if (animalName === 'Cat') {
+    return CAT_NAMES[unitIndex % CAT_NAMES.length];
+  }
+  // Humans get their own fixed names
+  if (animalName === 'Human') {
+    return HUMAN_NAMES[unitIndex % HUMAN_NAMES.length];
+  }
+
+  const name = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
+
+  // Check for special overrides
+  if (NAME_OVERRIDES[name]) {
+    return `${NAME_OVERRIDES[name]} ${name}`;
+  }
+
+  // Try alliteration: match adjective starting letter to name's first letter
+  const letter = name.charAt(0).toUpperCase();
+  const allitAdjs = ALLIT[letter];
+  if (allitAdjs && allitAdjs.length > 0) {
+    const adj = allitAdjs[Math.floor(Math.random() * allitAdjs.length)];
+    return `${adj.charAt(0).toUpperCase() + adj.slice(1)} ${name}`;
+  }
+
+  // Fallback: use animal-specific adjective
+  const adjs = ANIMAL_ADJECTIVES[animalName] || ['wild','brave','bold','fierce'];
+  const adj = adjs[Math.floor(Math.random() * adjs.length)];
+  return `${adj.charAt(0).toUpperCase() + adj.slice(1)} ${name}`;
+}
+
+// ===== SVG DRAWINGS =====
+function drawAnimal(name, m, a) {
+  // m = main colour, a = accent colour
+  // Darker shade helper
+  const dk = (hex, amt=40) => {
+    let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.max(0,r-amt); g = Math.max(0,g-amt); b = Math.max(0,b-amt);
+    return `rgb(${r},${g},${b})`;
+  };
+  const lt = (hex, amt=40) => {
+    let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255,r+amt); g = Math.min(255,g+amt); b = Math.min(255,b+amt);
+    return `rgb(${r},${g},${b})`;
+  };
+
+  const d = {
+    "Slug": `
+      <ellipse cx="50" cy="60" rx="30" ry="12" fill="${m}"/>
+      <ellipse cx="50" cy="56" rx="24" ry="14" fill="${lt(m)}"/>
+      <ellipse cx="50" cy="62" rx="20" ry="6" fill="${a}" opacity="0.4"/>
+      <path d="M36 48 Q34 34 30 28" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M64 48 Q66 34 70 28" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="30" cy="26" r="4" fill="${a}"/>
+      <circle cx="70" cy="26" r="4" fill="${a}"/>
+      <circle cx="30" cy="25" r="2" fill="#222"/>
+      <circle cx="70" cy="25" r="2" fill="#222"/>
+      <path d="M44 55 Q50 52 56 55" stroke="${dk(m)}" stroke-width="1.5" fill="none"/>
+    `,
+    "Clownfish": `
+      <ellipse cx="50" cy="50" rx="30" ry="20" fill="${m}"/>
+      <polygon points="80,50 95,36 95,64" fill="${m}"/>
+      <path d="M30 30 Q32 50 30 70" stroke="${a}" stroke-width="6" fill="none"/>
+      <path d="M50 30 Q52 50 50 70" stroke="${a}" stroke-width="5" fill="none"/>
+      <path d="M68 35 Q70 50 68 65" stroke="${a}" stroke-width="4" fill="none"/>
+      <circle cx="35" cy="44" r="5" fill="#fff"/>
+      <circle cx="35" cy="44" r="2.5" fill="#111"/>
+      <path d="M46 36 Q50 28 54 36" fill="${a}" opacity="0.7"/>
+      <ellipse cx="50" cy="64" rx="8" ry="4" fill="${a}" opacity="0.5"/>
+    `,
+    "Seahorse": `
+      <path d="M52 18 Q68 24 62 42 Q58 55 60 66 Q62 76 56 84 Q48 90 44 82 Q40 74 44 66" fill="${m}" stroke="${dk(m)}" stroke-width="2"/>
+      <circle cx="56" cy="28" r="10" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <circle cx="60" cy="26" r="3" fill="#fff"/>
+      <circle cx="60" cy="26" r="1.8" fill="#111"/>
+      <path d="M52 18 Q46 12 50 6 Q56 10 52 18" fill="${a}"/>
+      <path d="M60 40 L66 38 M60 48 L67 47 M60 56 L65 56" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M44 82 Q38 88 35 82 Q34 76 38 72" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <ellipse cx="54" cy="30" rx="5" ry="3" fill="${a}" opacity="0.4"/>
+    `,
+    "Flying Fish": `
+      <ellipse cx="48" cy="52" rx="28" ry="14" fill="${m}"/>
+      <ellipse cx="48" cy="52" rx="22" ry="10" fill="${lt(m,20)}"/>
+      <polygon points="76,52 94,40 92,58" fill="${a}"/>
+      <path d="M36 48 Q18 22 10 28 Q16 40 32 48" fill="${a}" opacity="0.75"/>
+      <path d="M42 48 Q28 26 20 32 Q28 42 38 48" fill="${a}" opacity="0.55"/>
+      <circle cx="34" cy="48" r="4" fill="#fff"/>
+      <circle cx="35" cy="48" r="2" fill="#111"/>
+      <path d="M48 62 Q52 68 48 72" fill="${a}" opacity="0.5"/>
+    `,
+    "Salmon": `
+      <path d="M15 50 Q20 36 50 34 Q80 36 90 50 Q80 64 50 66 Q20 64 15 50Z" fill="${m}"/>
+      <path d="M20 50 Q25 40 50 38 Q75 40 80 50 Q75 60 50 62 Q25 60 20 50Z" fill="${lt(m,25)}"/>
+      <polygon points="85,50 98,36 98,64" fill="${a}"/>
+      <path d="M48 36 Q55 28 62 36" fill="${a}" opacity="0.5"/>
+      <circle cx="28" cy="46" r="4" fill="#fff"/>
+      <circle cx="29" cy="46" r="2" fill="#111"/>
+      <path d="M60 44 Q64 42 68 44" stroke="${dk(m)}" stroke-width="1" fill="none"/>
+    `,
+    "Moray Eel": `
+      <path d="M22 32 Q38 26 52 36 Q66 46 74 60 Q80 72 72 78 Q64 82 60 72 Q54 58 40 50 Q28 44 20 54 Q16 48 22 32Z" fill="${m}" stroke="${dk(m)}" stroke-width="2.5"/>
+      <path d="M28 36 Q40 32 50 40 Q60 48 66 58" fill="none" stroke="${lt(m,30)}" stroke-width="4" opacity="0.4"/>
+      <circle cx="28" cy="34" r="6" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <circle cx="30" cy="33" r="2.5" fill="${a}"/>
+      <circle cx="30" cy="33" r="1.5" fill="#111"/>
+      <path d="M20 38 L14 36 M20 40 L13 42" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+    `,
+    "Manta Ray": `
+      <path d="M50 32 Q16 18 4 38 Q16 44 50 55 Q84 44 96 38 Q84 18 50 32Z" fill="${m}"/>
+      <path d="M50 38 Q30 30 20 38 Q30 42 50 48 Q70 42 80 38 Q70 30 50 38Z" fill="${lt(m,20)}" opacity="0.5"/>
+      <ellipse cx="50" cy="44" rx="16" ry="8" fill="${a}" opacity="0.35"/>
+      <path d="M48 55 L46 78" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M52 55 L54 78" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="36" cy="38" r="3.5" fill="#fff"/>
+      <circle cx="36" cy="38" r="2" fill="#111"/>
+      <circle cx="64" cy="38" r="3.5" fill="#fff"/>
+      <circle cx="64" cy="38" r="2" fill="#111"/>
+    `,
+    "Shark": `
+      <path d="M10 50 Q22 38 50 36 Q78 38 95 50 Q78 62 50 64 Q22 62 10 50Z" fill="${m}"/>
+      <path d="M15 50 Q25 44 50 42 Q75 44 88 50 Q75 58 50 60 Q25 58 15 50Z" fill="${lt(m,15)}" opacity="0.6"/>
+      <polygon points="50,36 44,16 56,28" fill="${a}"/>
+      <polygon points="86,48 98,38 96,54" fill="${m}"/>
+      <circle cx="28" cy="46" r="3.5" fill="#fff"/>
+      <circle cx="29" cy="46" r="2" fill="#111"/>
+      <path d="M16 50 Q20 54 16 58" stroke="${a}" stroke-width="2" fill="none"/>
+      <path d="M60 56 L62 58 M66 56 L68 58 M72 54 L74 56" stroke="${dk(m)}" stroke-width="1" stroke-linecap="round"/>
+    `,
+    "Anaconda": `
+      <path d="M18 28 Q34 22 46 34 Q56 46 66 40 Q76 34 82 44 Q88 56 78 66 Q68 74 56 68 Q46 62 36 70 Q24 78 18 66 Q14 54 22 48 Q30 42 26 34 Q22 30 18 28Z" fill="${m}" stroke="${dk(m)}" stroke-width="2.5"/>
+      <circle cx="20" cy="28" r="7" fill="${m}" stroke="${dk(m)}" stroke-width="2"/>
+      <circle cx="18" cy="26" r="2.5" fill="${a}"/>
+      <circle cx="18" cy="26" r="1.5" fill="#111"/>
+      <path d="M14 30 L8 32" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="40" cy="36" r="3" fill="${a}" opacity="0.3"/>
+      <circle cx="58" cy="42" r="2.5" fill="${a}" opacity="0.3"/>
+      <circle cx="72" cy="60" r="3" fill="${a}" opacity="0.3"/>
+      <circle cx="50" cy="66" r="2.5" fill="${a}" opacity="0.3"/>
+    `,
+    "Hummingbird": `
+      <ellipse cx="48" cy="46" rx="14" ry="12" fill="${m}"/>
+      <ellipse cx="48" cy="50" rx="10" ry="7" fill="${lt(m,25)}"/>
+      <circle cx="44" cy="38" r="9" fill="${m}"/>
+      <path d="M36 40 L10 44" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M55 34 Q74 20 80 26 Q76 32 58 38" fill="${a}" opacity="0.8"/>
+      <path d="M52 38 Q68 28 72 34 Q66 40 54 42" fill="${a}" opacity="0.55"/>
+      <circle cx="40" cy="36" r="3" fill="#fff"/>
+      <circle cx="41" cy="36" r="1.5" fill="#111"/>
+      <path d="M44 58 L42 72" stroke="${m}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M52 58 L54 72" stroke="${m}" stroke-width="2" stroke-linecap="round"/>
+    `,
+    "Robin": `
+      <ellipse cx="50" cy="50" rx="16" ry="18" fill="${m}"/>
+      <ellipse cx="50" cy="56" rx="13" ry="12" fill="${a}"/>
+      <circle cx="50" cy="36" r="11" fill="${m}"/>
+      <circle cx="45" cy="34" r="3" fill="#fff"/>
+      <circle cx="45" cy="34" r="1.5" fill="#111"/>
+      <polygon points="38,38 26,36 38,42" fill="${dk(a)}"/>
+      <path d="M42 66 L40 78" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M58 66 L60 78" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M56 30 Q60 24 64 28" fill="${m}" stroke="${m}" stroke-width="1"/>
+      <path d="M60 42 Q68 38 72 44" fill="${a}" opacity="0.4"/>
+    `,
+    "Penguin": `
+      <ellipse cx="50" cy="52" rx="20" ry="26" fill="${m}"/>
+      <ellipse cx="50" cy="56" rx="14" ry="20" fill="${a}"/>
+      <circle cx="50" cy="32" r="12" fill="${m}"/>
+      <circle cx="44" cy="30" r="3" fill="#fff"/>
+      <circle cx="44" cy="30" r="1.5" fill="#111"/>
+      <circle cx="56" cy="30" r="3" fill="#fff"/>
+      <circle cx="56" cy="30" r="1.5" fill="#111"/>
+      <polygon points="50,36 47,40 53,40" fill="${dk(a)}"/>
+      <path d="M30 48 Q24 58 30 68" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M70 48 Q76 58 70 68" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M42 76 L40 84" stroke="${dk(a)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M58 76 L60 84" stroke="${dk(a)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Falcon": `
+      <ellipse cx="50" cy="50" rx="16" ry="20" fill="${m}"/>
+      <circle cx="50" cy="34" r="12" fill="${m}"/>
+      <ellipse cx="50" cy="42" rx="10" ry="6" fill="${a}" opacity="0.3"/>
+      <path d="M34 44 Q12 34 6 48" fill="${a}" stroke="${dk(a)}" stroke-width="1"/>
+      <path d="M66 44 Q88 34 94 48" fill="${a}" stroke="${dk(a)}" stroke-width="1"/>
+      <circle cx="44" cy="32" r="3.5" fill="#fff"/>
+      <circle cx="44" cy="32" r="2" fill="#111"/>
+      <circle cx="56" cy="32" r="3.5" fill="#fff"/>
+      <circle cx="56" cy="32" r="2" fill="#111"/>
+      <path d="M48 32 Q44 26 50 24 Q56 26 52 32" fill="${dk(m)}" opacity="0.5"/>
+      <polygon points="50,38 47,44 53,44" fill="${dk(a)}"/>
+      <path d="M44 68 L42 80" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M56 68 L58 80" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+    `,
+    "Eagle": `<!-- unused -->`,
+    "Cassowary": `
+      <ellipse cx="50" cy="58" rx="20" ry="22" fill="${m}"/>
+      <path d="M44 40 Q42 22 44 12" stroke="${m}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="44" cy="30" r="10" fill="${m}"/>
+      <polygon points="44,14 36,30 52,30" fill="${a}"/>
+      <circle cx="40" cy="28" r="3" fill="#fff"/>
+      <circle cx="40" cy="28" r="1.5" fill="#111"/>
+      <path d="M38 34 L30 36 L38 38" fill="${a}"/>
+      <path d="M50 36 Q56 34 58 30" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M38 78 L34 94" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M62 78 L66 94" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+    `,
+    "Flamingo": `
+      <ellipse cx="54" cy="38" rx="14" ry="16" fill="${m}"/>
+      <ellipse cx="54" cy="42" rx="10" ry="10" fill="${lt(m,20)}"/>
+      <path d="M54 54 Q56 68 54 78" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="54" cy="26" r="9" fill="${m}"/>
+      <path d="M54 28 Q64 26 62 32 Q58 36 54 32" fill="${dk(m)}"/>
+      <circle cx="50" cy="24" r="2.5" fill="#fff"/>
+      <circle cx="50" cy="24" r="1.5" fill="#111"/>
+      <path d="M50 78 L44 94" stroke="${a}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M58 78 L62 94" stroke="${a}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M44 94 L40 94 M62 94 L66 94" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+    `,
+    "Swan": `<!-- unused -->`,
+    "Ostrich": `
+      <ellipse cx="55" cy="42" rx="22" ry="20" fill="${m}"/>
+      <ellipse cx="55" cy="46" rx="16" ry="14" fill="${lt(m,20)}"/>
+      <path d="M38 36 Q34 20 32 10" stroke="${m}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="8" r="8" fill="${m}"/>
+      <circle cx="29" cy="6" r="3" fill="#fff"/>
+      <circle cx="29" cy="6" r="1.5" fill="#111"/>
+      <polygon points="24,8 14,6 24,12" fill="${a}"/>
+      <path d="M66 46 Q74 42 80 46" fill="${a}" opacity="0.5"/>
+      <path d="M42 60 L36 90" stroke="${dk(m)}" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M66 60 L72 90" stroke="${dk(m)}" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M36 90 L30 92 M72 90 L78 92" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Sugar Glider": `
+      <ellipse cx="50" cy="52" rx="14" ry="16" fill="${m}"/>
+      <circle cx="50" cy="36" r="12" fill="${m}"/>
+      <path d="M38 40 Q18 34 14 54 Q20 50 38 54" fill="${a}" opacity="0.6"/>
+      <path d="M62 40 Q82 34 86 54 Q80 50 62 54" fill="${a}" opacity="0.6"/>
+      <circle cx="44" cy="34" r="5" fill="#fff"/>
+      <circle cx="56" cy="34" r="5" fill="#fff"/>
+      <circle cx="44" cy="34" r="2.5" fill="#111"/>
+      <circle cx="56" cy="34" r="2.5" fill="#111"/>
+      <ellipse cx="50" cy="40" rx="3" ry="2" fill="${a}"/>
+      <path d="M50 68 Q56 78 60 84" stroke="${m}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    `,
+    "Cat": `
+      <ellipse cx="50" cy="56" rx="18" ry="20" fill="${m}"/>
+      <circle cx="50" cy="36" r="15" fill="${m}"/>
+      <polygon points="36,28 32,10 44,24" fill="${m}" stroke="${a}" stroke-width="1.5"/>
+      <polygon points="64,28 68,10 56,24" fill="${m}" stroke="${a}" stroke-width="1.5"/>
+      <circle cx="42" cy="34" r="4.5" fill="#fff"/>
+      <circle cx="58" cy="34" r="4.5" fill="#fff"/>
+      <circle cx="43" cy="34" r="2.5" fill="#111"/>
+      <circle cx="57" cy="34" r="2.5" fill="#111"/>
+      <ellipse cx="50" cy="41" rx="3" ry="2" fill="${a}"/>
+      <path d="M42 43 L36 45 M58 43 L64 45 M42 45 L36 47 M58 45 L64 47" stroke="${a}" stroke-width="1" stroke-linecap="round"/>
+      <path d="M72 50 Q84 44 92 50 Q86 52 78 50" fill="none" stroke="${m}" stroke-width="2.5" stroke-linecap="round"/>
+    `,
+    "Hedgehog": `
+      <path d="M28 48 L22 30 L34 42 L30 24 L40 40 L38 22 L48 38 L50 20 L52 38 L60 22 L58 40 L68 24 L64 42 L76 30 L70 48"
+        fill="${a}"/>
+      <ellipse cx="50" cy="58" rx="26" ry="18" fill="${m}"/>
+      <ellipse cx="50" cy="62" rx="20" ry="10" fill="${lt(m,20)}"/>
+      <circle cx="36" cy="54" r="3.5" fill="#fff"/>
+      <circle cx="36" cy="54" r="2" fill="#111"/>
+      <ellipse cx="30" cy="58" rx="5" ry="3.5" fill="${a}"/>
+      <path d="M36 70 L34 78 M50 72 L50 80 M64 70 L66 78" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+    `,
+    "Deer": `
+      <ellipse cx="52" cy="48" rx="20" ry="18" fill="${m}"/>
+      <ellipse cx="52" cy="52" rx="14" ry="10" fill="${lt(m,20)}"/>
+      <path d="M38 42 Q34 28 36 18" stroke="${m}" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="36" cy="16" r="9" fill="${m}"/>
+      <path d="M30 10 L24 -2 L30 6 L22 -6 L32 4" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M42 10 L48 -2 L42 6 L52 -6 L40 4" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="14" r="3.5" fill="#fff"/>
+      <circle cx="32" cy="14" r="2" fill="#111"/>
+      <ellipse cx="30" cy="20" rx="3" ry="2" fill="${dk(m)}"/>
+      <path d="M36 64 L32 86 M46 64 L44 86 M58 64 L60 86 M68 64 L72 86" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+    `,
+    "Wolf": `
+      <ellipse cx="50" cy="52" rx="22" ry="18" fill="${m}"/>
+      <ellipse cx="50" cy="56" rx="16" ry="10" fill="${lt(m,15)}"/>
+      <circle cx="42" cy="34" r="14" fill="${m}"/>
+      <polygon points="32,26 26,8 40,22" fill="${m}" stroke="${a}" stroke-width="1.5"/>
+      <polygon points="54,26 60,8 46,22" fill="${m}" stroke="${a}" stroke-width="1.5"/>
+      <circle cx="36" cy="32" r="3.5" fill="${a}"/>
+      <circle cx="36" cy="32" r="2" fill="#111"/>
+      <circle cx="50" cy="32" r="3.5" fill="${a}"/>
+      <circle cx="50" cy="32" r="2" fill="#111"/>
+      <path d="M40 40 Q43 44 40 48" fill="${dk(m)}"/>
+      <path d="M72 46 Q84 40 94 46 Q88 48 80 46" fill="${m}" stroke="${a}" stroke-width="1.5" fill="none"/>
+      <path d="M36 68 L32 86 M48 68 L46 86 M56 68 L58 86 M66 68 L70 86" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Bear": `
+      <ellipse cx="50" cy="56" rx="26" ry="24" fill="${m}"/>
+      <ellipse cx="50" cy="60" rx="18" ry="14" fill="${lt(m,15)}"/>
+      <circle cx="50" cy="32" r="18" fill="${m}"/>
+      <circle cx="34" cy="18" r="8" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <circle cx="66" cy="18" r="8" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <circle cx="34" cy="18" r="5" fill="${a}"/>
+      <circle cx="66" cy="18" r="5" fill="${a}"/>
+      <circle cx="42" cy="30" r="4" fill="#fff"/>
+      <circle cx="58" cy="30" r="4" fill="#fff"/>
+      <circle cx="42" cy="30" r="2.5" fill="#111"/>
+      <circle cx="58" cy="30" r="2.5" fill="#111"/>
+      <ellipse cx="50" cy="38" rx="6" ry="5" fill="${a}"/>
+      <ellipse cx="50" cy="40" rx="3.5" ry="2.5" fill="#222"/>
+      <path d="M36 78 L32 90 M64 78 L68 90" stroke="${dk(m)}" stroke-width="5" stroke-linecap="round"/>
+    `,
+    "Giraffe": `
+      <ellipse cx="58" cy="62" rx="20" ry="18" fill="${m}"/>
+      <path d="M44 54 Q40 30 38 10" stroke="${m}" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <circle cx="38" cy="8" r="10" fill="${m}"/>
+      <path d="M34 0 L30 -8" stroke="${a}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M42 0 L46 -8" stroke="${a}" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="34" cy="6" r="3" fill="#fff"/>
+      <circle cx="34" cy="6" r="1.5" fill="#111"/>
+      <circle cx="48" cy="36" r="4" fill="${a}" opacity="0.6"/>
+      <circle cx="44" cy="48" r="3.5" fill="${a}" opacity="0.6"/>
+      <circle cx="56" cy="54" r="4.5" fill="${a}" opacity="0.6"/>
+      <circle cx="64" cy="64" r="3.5" fill="${a}" opacity="0.6"/>
+      <circle cx="52" cy="68" r="3" fill="${a}" opacity="0.6"/>
+      <path d="M44 78 L40 96 M54 78 L52 96 M64 78 L68 96 M72 78 L76 96" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+    `,
+    "Horse": `
+      <ellipse cx="54" cy="46" rx="24" ry="18" fill="${m}"/>
+      <ellipse cx="54" cy="50" rx="18" ry="12" fill="${lt(m,15)}"/>
+      <path d="M36 40 Q30 26 32 14" stroke="${m}" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="12" r="10" fill="${m}"/>
+      <circle cx="28" cy="10" r="3" fill="#fff"/>
+      <circle cx="28" cy="10" r="1.5" fill="#111"/>
+      <polygon points="26,12 16,10 26,16" fill="${dk(m)}"/>
+      <path d="M36 16 Q40 6 38 14 Q42 4 40 12 Q44 2 42 10" stroke="${a}" stroke-width="2.5" fill="none"/>
+      <path d="M74 40 Q86 34 92 42 Q88 44 80 42" fill="${a}" opacity="0.5"/>
+      <path d="M38 62 L34 88 M50 62 L48 88 M60 62 L62 88 M72 62 L76 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+    `,
+    "Elephant": `
+      <ellipse cx="50" cy="50" rx="30" ry="26" fill="${m}"/>
+      <circle cx="50" cy="28" r="20" fill="${m}"/>
+      <path d="M18 28 Q8 24 6 36 Q4 48 12 46 Q18 44 18 34" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <path d="M82 28 Q92 24 94 36 Q96 48 88 46 Q82 44 82 34" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <path d="M50 42 Q48 56 44 70 Q42 78 48 78 Q54 78 52 70 Q50 56 50 42" fill="${m}" stroke="${dk(m)}" stroke-width="1.5"/>
+      <circle cx="38" cy="26" r="5" fill="#fff"/>
+      <circle cx="38" cy="26" r="3" fill="#111"/>
+      <circle cx="62" cy="26" r="5" fill="#fff"/>
+      <circle cx="62" cy="26" r="3" fill="#111"/>
+      <ellipse cx="12" cy="36" rx="4" ry="6" fill="${a}" opacity="0.3"/>
+      <ellipse cx="88" cy="36" rx="4" ry="6" fill="${a}" opacity="0.3"/>
+      <path d="M34 74 L30 90 M44 74 L42 90 M58 74 L60 90 M68 74 L72 90" stroke="${dk(m)}" stroke-width="5" stroke-linecap="round"/>
+    `,
+    "Butterfly": `
+      <path d="M50 38 Q26 14 14 32 Q8 48 34 50 Q8 52 14 68 Q26 86 50 62" fill="${m}" opacity="0.85" stroke="${dk(m)}" stroke-width="1"/>
+      <path d="M50 38 Q74 14 86 32 Q92 48 66 50 Q92 52 86 68 Q74 86 50 62" fill="${m}" opacity="0.85" stroke="${dk(m)}" stroke-width="1"/>
+      <circle cx="26" cy="32" r="6" fill="${a}" opacity="0.6"/>
+      <circle cx="74" cy="32" r="6" fill="${a}" opacity="0.6"/>
+      <circle cx="22" cy="62" r="5" fill="${a}" opacity="0.5"/>
+      <circle cx="78" cy="62" r="5" fill="${a}" opacity="0.5"/>
+      <circle cx="34" cy="42" r="3" fill="${lt(a)}" opacity="0.4"/>
+      <circle cx="66" cy="42" r="3" fill="${lt(a)}" opacity="0.4"/>
+      <ellipse cx="50" cy="50" rx="4" ry="16" fill="${a}"/>
+      <path d="M46 34 L38 22" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M54 34 L62 22" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="38" cy="21" r="2" fill="${a}"/>
+      <circle cx="62" cy="21" r="2" fill="${a}"/>
+    `,
+    "Ant": `
+      <ellipse cx="30" cy="50" rx="10" ry="9" fill="${m}"/>
+      <ellipse cx="50" cy="48" rx="12" ry="10" fill="${m}"/>
+      <ellipse cx="72" cy="50" rx="9" ry="8" fill="${m}"/>
+      <circle cx="26" cy="46" r="3" fill="#fff"/>
+      <circle cx="26" cy="46" r="1.5" fill="#111"/>
+      <path d="M24 42 L16 28" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M32 42 L30 28" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="16" cy="27" r="2" fill="${a}"/>
+      <circle cx="30" cy="27" r="2" fill="${a}"/>
+      <path d="M42 56 L34 72" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M50 56 L50 74" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M58 56 L66 72" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="50" cy="44" rx="6" ry="4" fill="${a}" opacity="0.3"/>
+    `,
+    "Beetle": `
+      <ellipse cx="50" cy="54" rx="22" ry="24" fill="${m}"/>
+      <path d="M50 30 L50 78" stroke="${a}" stroke-width="2"/>
+      <path d="M50 54 L28 54" stroke="${a}" stroke-width="1.5" opacity="0.5"/>
+      <path d="M50 54 L72 54" stroke="${a}" stroke-width="1.5" opacity="0.5"/>
+      <circle cx="50" cy="32" r="10" fill="${a}"/>
+      <circle cx="46" cy="30" r="2.5" fill="#fff"/>
+      <circle cx="54" cy="30" r="2.5" fill="#fff"/>
+      <circle cx="46" cy="30" r="1.5" fill="#111"/>
+      <circle cx="54" cy="30" r="1.5" fill="#111"/>
+      <path d="M30 44 L16 34" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M70 44 L84 34" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M28 54 L12 56" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M72 54 L88 56" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M30 66 L18 78" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M70 66 L82 78" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Dragonfly": `
+      <ellipse cx="50" cy="52" rx="5.5" ry="24" fill="${a}"/>
+      <ellipse cx="50" cy="52" rx="3.5" ry="20" fill="${lt(a,20)}"/>
+      <circle cx="50" cy="26" r="10" fill="${m}"/>
+      <circle cx="46" cy="24" r="3.5" fill="#fff"/>
+      <circle cx="54" cy="24" r="3.5" fill="#fff"/>
+      <circle cx="46" cy="24" r="2" fill="#111"/>
+      <circle cx="54" cy="24" r="2" fill="#111"/>
+      <path d="M44 38 Q22 26 14 36 Q22 42 44 42" fill="${m}" opacity="0.55" stroke="${m}" stroke-width="0.5"/>
+      <path d="M56 38 Q78 26 86 36 Q78 42 56 42" fill="${m}" opacity="0.55" stroke="${m}" stroke-width="0.5"/>
+      <path d="M44 48 Q24 42 18 50 Q24 56 44 52" fill="${m}" opacity="0.45" stroke="${m}" stroke-width="0.5"/>
+      <path d="M56 48 Q76 42 82 50 Q76 56 56 52" fill="${m}" opacity="0.45" stroke="${m}" stroke-width="0.5"/>
+    `,
+    "Mantis": `
+      <ellipse cx="50" cy="60" rx="10" ry="20" fill="${m}"/>
+      <ellipse cx="50" cy="56" rx="7" ry="12" fill="${lt(m,15)}"/>
+      <circle cx="50" cy="32" r="12" fill="${m}"/>
+      <circle cx="44" cy="30" r="4.5" fill="#fff"/>
+      <circle cx="56" cy="30" r="4.5" fill="#fff"/>
+      <circle cx="44" cy="30" r="2.5" fill="#111"/>
+      <circle cx="56" cy="30" r="2.5" fill="#111"/>
+      <path d="M40 42 L26 28 L20 14" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M60 42 L74 28 L80 14" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M20 14 L14 18" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M80 14 L86 18" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M44 62 L32 78" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M56 62 L68 78" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M42 70 L28 86" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M58 70 L72 86" stroke="${dk(m)}" stroke-width="2.5" stroke-linecap="round"/>
+    `,
+    "Tortoise": `
+      <ellipse cx="50" cy="54" rx="30" ry="22" fill="${a}"/>
+      <path d="M20 54 Q20 36 50 28 Q80 36 80 54" fill="${m}"/>
+      <path d="M36 38 L44 36 L50 28 L56 36 L64 38 L58 46 L54 40 L50 46 L46 40 L42 46Z" fill="${lt(m,20)}" opacity="0.5"/>
+      <circle cx="38" cy="44" r="6" fill="${lt(m,15)}" opacity="0.3"/>
+      <circle cx="62" cy="44" r="6" fill="${lt(m,15)}" opacity="0.3"/>
+      <circle cx="28" cy="42" r="8" fill="${m}"/>
+      <circle cx="26" cy="40" r="3" fill="#fff"/>
+      <circle cx="26" cy="40" r="1.5" fill="#111"/>
+      <path d="M24 72 L18 80" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M38 72 L34 82" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M62 72 L66 82" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M76 72 L82 80" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M74 54 Q82 56 80 64" stroke="${m}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    `,
+    "Atlas Moth": `
+      <path d="M50 36 Q20 8 8 28 Q4 48 30 50 Q4 52 8 72 Q20 92 50 64" fill="${m}" opacity="0.82" stroke="${dk(m)}" stroke-width="1"/>
+      <path d="M50 36 Q80 8 92 28 Q96 48 70 50 Q96 52 92 72 Q80 92 50 64" fill="${m}" opacity="0.82" stroke="${dk(m)}" stroke-width="1"/>
+      <circle cx="26" cy="34" r="7" fill="${a}" opacity="0.5"/>
+      <circle cx="74" cy="34" r="7" fill="${a}" opacity="0.5"/>
+      <circle cx="22" cy="64" r="6" fill="${a}" opacity="0.4"/>
+      <circle cx="78" cy="64" r="6" fill="${a}" opacity="0.4"/>
+      <ellipse cx="50" cy="50" rx="5" ry="18" fill="${a}"/>
+      <path d="M12 28 Q6 22 4 14" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M88 28 Q94 22 96 14" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+    `,
+    "Stick Insect": `
+      <line x1="50" y1="10" x2="50" y2="90" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <line x1="48" y1="10" x2="52" y2="10" stroke="${m}" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="50" cy="10" r="5" fill="${m}"/>
+      <circle cx="48" cy="8" r="2" fill="#fff"/>
+      <circle cx="52" cy="8" r="2" fill="#fff"/>
+      <circle cx="48" cy="8" r="1" fill="#111"/>
+      <circle cx="52" cy="8" r="1" fill="#111"/>
+      <path d="M48" y1="4" x2="40" y2="-4" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="46" y1="4" x2="38" y2="-4" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="54" y1="4" x2="62" y2="-4" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="47" y1="28" x2="26" y2="18" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="53" y1="28" x2="74" y2="18" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="47" y1="50" x2="24" y2="48" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="53" y1="50" x2="76" y2="48" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="47" y1="72" x2="26" y2="82" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="53" y1="72" x2="74" y2="82" stroke="${m}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Hercules Beetle": `
+      <ellipse cx="50" cy="58" rx="24" ry="22" fill="${m}"/>
+      <path d="M50 36 L50 80" stroke="${a}" stroke-width="2"/>
+      <circle cx="50" cy="36" r="12" fill="${m}"/>
+      <path d="M44 30 Q40 10 50 2 Q60 10 56 30" fill="${a}" stroke="${dk(a)}" stroke-width="1.5"/>
+      <circle cx="44" cy="34" r="3" fill="#fff"/>
+      <circle cx="56" cy="34" r="3" fill="#fff"/>
+      <circle cx="44" cy="34" r="1.5" fill="#111"/>
+      <circle cx="56" cy="34" r="1.5" fill="#111"/>
+      <path d="M28 50 L10 38" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M72 50 L90 38" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M26 62 L8 64" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M74 62 L92 64" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M28 74 L14 86" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M72 74 L86 86" stroke="${dk(m)}" stroke-width="3.5" stroke-linecap="round"/>
+    `,
+    "Human": `
+      <circle cx="50" cy="24" r="14" fill="${m}"/>
+      <circle cx="50" cy="22" r="12" fill="${m}"/>
+      <path d="M40 18 Q44 8 50 10 Q56 8 60 18" fill="${a}"/>
+      <circle cx="44" cy="22" r="3" fill="#fff"/>
+      <circle cx="56" cy="22" r="3" fill="#fff"/>
+      <circle cx="44" cy="22" r="1.5" fill="#111"/>
+      <circle cx="56" cy="22" r="1.5" fill="#111"/>
+      <path d="M46 28 Q50 31 54 28" stroke="#111" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M50 38 L50 65" stroke="${m}" stroke-width="8" stroke-linecap="round"/>
+      <rect x="42" y="40" width="16" height="26" rx="4" fill="${a}"/>
+      <path d="M42 44 L26 58" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M58 44 L74 58" stroke="${m}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M44 66 L40 90" stroke="${dk(m)}" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M56 66 L60 90" stroke="${dk(m)}" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M40 90 L36 92" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M60 90 L64 92" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+    `,
+    "Scorpion": `
+      <ellipse cx="50" cy="55" rx="16" ry="12" fill="${m}"/>
+      <circle cx="50" cy="42" r="8" fill="${m}"/>
+      <circle cx="47" cy="40" r="2.5" fill="#fff"/><circle cx="47" cy="40" r="1.5" fill="#111"/>
+      <circle cx="53" cy="40" r="2.5" fill="#fff"/><circle cx="53" cy="40" r="1.5" fill="#111"/>
+      <path d="M38 48 L24 40 L20 34" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M62 48 L76 40 L80 34" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M50 67 Q50 78 45 85 Q40 90 38 84 Q36 78 42 75" stroke="${a}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="42" cy="74" r="3" fill="${a}"/>
+    `,
+    "Dart Frog": `
+      <ellipse cx="50" cy="55" rx="20" ry="16" fill="${m}"/>
+      <ellipse cx="50" cy="58" rx="14" ry="10" fill="${a}" opacity="0.5"/>
+      <circle cx="42" cy="42" r="7" fill="${m}"/>
+      <circle cx="58" cy="42" r="7" fill="${m}"/>
+      <circle cx="42" cy="40" r="4" fill="#fff"/><circle cx="42" cy="40" r="2.5" fill="#111"/>
+      <circle cx="58" cy="40" r="4" fill="#fff"/><circle cx="58" cy="40" r="2.5" fill="#111"/>
+      <path d="M36 68 L28 78" stroke="${m}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M64 68 L72 78" stroke="${m}" stroke-width="4" stroke-linecap="round"/>
+    `,
+    "Meerkat": `
+      <ellipse cx="50" cy="55" rx="12" ry="18" fill="${m}"/>
+      <circle cx="50" cy="35" r="11" fill="${m}"/>
+      <circle cx="50" cy="38" r="8" fill="${lt(m,20)}"/>
+      <circle cx="45" cy="33" r="3" fill="#fff"/><circle cx="45" cy="33" r="1.5" fill="#111"/>
+      <circle cx="55" cy="33" r="3" fill="#fff"/><circle cx="55" cy="33" r="1.5" fill="#111"/>
+      <ellipse cx="50" cy="38" rx="3" ry="2" fill="${dk(m)}"/>
+      <circle cx="50" cy="26" r="4" fill="${a}" opacity="0.3"/>
+      <path d="M44 72 L42 84" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M56 72 L58 84" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Pufferfish": `
+      <circle cx="50" cy="50" r="24" fill="${m}"/>
+      <circle cx="50" cy="50" r="18" fill="${lt(m,20)}"/>
+      <circle cx="42" cy="44" r="4" fill="#fff"/><circle cx="42" cy="44" r="2" fill="#111"/>
+      <circle cx="58" cy="44" r="4" fill="#fff"/><circle cx="58" cy="44" r="2" fill="#111"/>
+      <ellipse cx="50" cy="54" rx="4" ry="3" fill="${a}"/>
+      <line x1="50" y1="26" x2="50" y2="18" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="30" y1="40" x2="22" y2="36" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="70" y1="40" x2="78" y2="36" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="34" y1="64" x2="26" y2="70" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="66" y1="64" x2="74" y2="70" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+    `,
+    "Bat": `
+      <circle cx="50" cy="42" r="10" fill="${m}"/>
+      <circle cx="44" cy="40" r="3.5" fill="#fff"/><circle cx="44" cy="40" r="2" fill="#111"/>
+      <circle cx="56" cy="40" r="3.5" fill="#fff"/><circle cx="56" cy="40" r="2" fill="#111"/>
+      <polygon points="42,34 40,26 46,32" fill="${m}"/>
+      <polygon points="58,34 60,26 54,32" fill="${m}"/>
+      <path d="M40 44 Q20 28 8 42 Q14 40 20 44 Q16 36 24 42 Q20 34 30 40" fill="${a}" opacity="0.8"/>
+      <path d="M60 44 Q80 28 92 42 Q86 40 80 44 Q84 36 76 42 Q80 34 70 40" fill="${a}" opacity="0.8"/>
+      <ellipse cx="50" cy="50" rx="6" ry="8" fill="${m}"/>
+    `,
+    "Dolphin": `
+      <path d="M15 50 Q25 38 50 36 Q75 38 88 50 Q75 60 50 62 Q25 60 15 50Z" fill="${m}"/>
+      <path d="M20 50 Q30 42 50 40 Q70 42 82 50 Q70 56 50 58 Q30 56 20 50Z" fill="${lt(m,20)}"/>
+      <path d="M52 36 Q56 28 60 32" fill="${a}" opacity="0.6"/>
+      <polygon points="82,48 96,40 94,54" fill="${m}"/>
+      <circle cx="30" cy="46" r="3.5" fill="#fff"/><circle cx="31" cy="46" r="2" fill="#111"/>
+      <path d="M40 52 Q50 58 60 52" stroke="${lt(m,30)}" stroke-width="1.5" fill="none"/>
+    `,
+    "Camel": `
+      <ellipse cx="52" cy="48" rx="24" ry="16" fill="${m}"/>
+      <path d="M42 36 Q46 28 50 34 Q54 28 58 36" fill="${a}" opacity="0.5"/>
+      <path d="M36 42 Q30 26 32 14" stroke="${m}" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="12" r="9" fill="${m}"/>
+      <circle cx="28" cy="10" r="3" fill="#fff"/><circle cx="28" cy="10" r="1.5" fill="#111"/>
+      <polygon points="26,14 18,12 26,18" fill="${dk(m)}"/>
+      <path d="M38 62 L34 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M50 62 L48 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M58 62 L60 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M68 62 L72 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+    `,
+  };
+  return `<svg viewBox="-5 -10 110 115" xmlns="http://www.w3.org/2000/svg">${d[name] || `<circle cx="50" cy="50" r="30" fill="${m}"/>`}</svg>`;
+}
+
+// ===== STATE =====
+const sizeNames = ['Small','Medium','Large'];
+const densityNames = ['Light','Normal','Heavy'];
+const limbLabels = ['Ocean','Desert','Jungle','Air'];
+// Type advantage: 0=Ocean beats 1=Desert, 1=Desert beats 2=Jungle, 2=Jungle beats 3=Air, 3=Air beats 0=Ocean
+const TYPE_BEATS = { 0: 1, 1: 2, 2: 3, 3: 0 };
+
+// Stats by size: [hp, count]
+const SIZE_STATS = [[10, 6], [50, 3], [350, 1]];
+// Stats by density: [attackSpeed (s), damage]
+// [attackSpeed, damage, hpMultiplier]
+const DENSITY_STATS = [[0.8, 5, 0.7], [2, 12, 1], [6, 40, 1.4]];
+// Max values for bar scaling
+const MAX_HP = 490, MAX_DMG = 40, MAX_SPD = 6;
+
+const panels = [
+  { size: 1, density: 1, limbs: 2 },
+  { size: 1, density: 0, limbs: 0 },
+  { size: 0, density: 2, limbs: 3 },
+  { size: 2, density: 1, limbs: 1 },
+];
+
+let isHatching = false;
+let gameMode = '1v1'; // '1v1' or '2v2'
+
+// ===== BUILD UI =====
+const dualContainer = document.getElementById('dualContainer');
+
+// Create team groups
+const team1Group = document.createElement('div');
+team1Group.className = 'team-group';
+team1Group.innerHTML = '<div class="team-label t1">Team 1</div>';
+const vsDiv = document.createElement('div');
+vsDiv.className = 'vs-divider';
+vsDiv.textContent = 'VS';
+const team2Group = document.createElement('div');
+team2Group.className = 'team-group';
+team2Group.innerHTML = '<div class="team-label t2">Team 2</div>';
+dualContainer.appendChild(team1Group);
+dualContainer.appendChild(vsDiv);
+dualContainer.appendChild(team2Group);
+
+panels.forEach((state, idx) => {
+  const panel = document.createElement('div');
+  panel.className = 'egg-panel';
+  panel.id = `panel${idx}`;
+
+  const teamNum = idx < 2 ? 1 : 2;
+  const eggNum = idx < 2 ? idx + 1 : idx - 1;
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Egg ${idx + 1}</div>
+      <button class="rand-btn" id="rand${idx}">Randomise</button>
+    </div>
+    <div class="egg-holder">
+      <div class="egg-container"><div class="egg" id="egg${idx}">
+        <div class="accent-band" id="band${idx}"></div>
+        <div class="spots" id="spots${idx}"></div>
+        <div class="shine"></div>
+        <svg class="crack-svg" id="cracks${idx}" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div></div>
+      <div class="nest"></div>
+    </div>
+    <div class="controls-grid">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="size${idx}">
+          <button class="opt-btn${state.size===0?' selected':''}" data-val="0">Small</button>
+          <button class="opt-btn${state.size===1?' selected':''}" data-val="1">Medium</button>
+          <button class="opt-btn${state.size===2?' selected':''}" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="dens${idx}">
+          <button class="opt-btn${state.density===0?' selected':''}" data-val="0">Light</button>
+          <button class="opt-btn${state.density===1?' selected':''}" data-val="1">Normal</button>
+          <button class="opt-btn${state.density===2?' selected':''}" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="limb${idx}">
+          <button class="limb-btn${state.limbs===0?' selected':''}" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn${state.limbs===1?' selected':''}" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn${state.limbs===2?' selected':''}" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn${state.limbs===3?' selected':''}" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
+        </div>
+      </div>
+    </div>
+  `;
+  if (idx < 2) team1Group.appendChild(panel);
+  else team2Group.appendChild(panel);
+
+  // Wire option buttons
+  wireButtons(`size${idx}`, 'opt-btn', v => { panels[idx].size = v; updateEgg(idx); });
+  wireButtons(`dens${idx}`, 'opt-btn', v => { panels[idx].density = v; updateEgg(idx); });
+  wireButtons(`limb${idx}`, 'limb-btn', v => { panels[idx].limbs = v; updateEgg(idx); });
+
+  // Randomise button
+  document.getElementById(`rand${idx}`).addEventListener('click', () => randomise(idx));
+
+  updateEgg(idx);
+});
+
+// Randomise all
+document.getElementById('randomiseAll').addEventListener('click', () => {
+  if (gameMode === '2v2') [0,1,2,3].forEach(i => randomise(i));
+  else [0,2].forEach(i => randomise(i));
+});
+
+// Mode toggle
+document.getElementById('modeToggle').addEventListener('click', () => {
+  gameMode = gameMode === '2v2' ? '1v1' : '2v2';
+  document.getElementById('modeToggle').textContent = `Mode: ${gameMode}`;
+  applyMode();
+});
+
+function activePanels() {
+  return gameMode === '1v1' ? [0, 2] : [0, 1, 2, 3];
+}
+
+function applyMode() {
+  const is1v1 = gameMode === '1v1';
+  document.getElementById('panel1').style.display = is1v1 ? 'none' : '';
+  document.getElementById('panel3').style.display = is1v1 ? 'none' : '';
+  document.querySelector('.subtitle').textContent = is1v1 ? 'Craft two eggs. One vs one.' : 'Craft four eggs. Two vs two.';
+  document.getElementById('hatchBtn').textContent = is1v1 ? 'Hatch Both!' : 'Hatch All!';
+  document.getElementById('modeToggle').textContent = `Mode: ${gameMode}`;
+}
+applyMode();
+
+function wireButtons(rowId, cls, setter) {
+  const row = document.getElementById(rowId);
+  row.querySelectorAll(`.${cls}`).forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll(`.${cls}`).forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      setter(parseInt(btn.dataset.val));
+    });
+  });
+}
+
+function randomise(idx) {
+  panels[idx].size = Math.floor(Math.random() * 3);
+  panels[idx].density = Math.floor(Math.random() * 3);
+  panels[idx].limbs = Math.floor(Math.random() * 4);
+
+  // Update buttons visually
+  [`size${idx}`, `dens${idx}`].forEach(rowId => {
+    const row = document.getElementById(rowId);
+    row.querySelectorAll('.opt-btn').forEach(b => {
+      b.classList.toggle('selected', parseInt(b.dataset.val) === panels[idx][rowId.startsWith('size') ? 'size' : 'density']);
+    });
+  });
+  const limbRow = document.getElementById(`limb${idx}`);
+  limbRow.querySelectorAll('.limb-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.val) === panels[idx].limbs);
+  });
+  updateEgg(idx);
+}
+
+// ===== EGG RENDERING =====
+function updateEgg(idx) {
+  const s = panels[idx];
+  const egg = document.getElementById(`egg${idx}`);
+  const key = `${s.size}-${s.density}-${s.limbs}`;
+  const animal = ANIMALS[key];
+  const mc = animal.m;
+  const ac = animal.a;
+  const sizes = [[80,105],[110,142],[145,188]];
+  const [w, h] = sizes[s.size];
+  egg.style.width = w + 'px';
+  egg.style.height = h + 'px';
+  egg.style.background = mc;
+
+  const d = s.density;
+  egg.style.boxShadow = `
+    inset -${8+d*5}px -${4+d*4}px ${12+d*6}px rgba(0,0,0,${0.15+d*0.1}),
+    inset 8px 8px 20px rgba(255,255,255,${0.18-d*0.04}),
+    0 ${8+d*5}px ${25+d*12}px rgba(0,0,0,${0.2+d*0.08})
+  `;
+
+  document.getElementById(`band${idx}`).innerHTML = `<div style="position:absolute;width:140%;height:100%;left:-20%;top:0;background:${ac};border-radius:50%;"></div>`;
+
+  const spots = document.getElementById(`spots${idx}`);
+  spots.innerHTML = '';
+  const count = [2,4,6,8][s.limbs];
+  for (let i = 0; i < count; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'spot';
+    const sz = 5 + Math.random() * 9;
+    sp.style.cssText = `width:${sz}px;height:${sz}px;background:${ac};left:${15+Math.random()*65}%;top:${10+Math.random()*70}%`;
+    spots.appendChild(sp);
+  }
+}
+
+// ===== CRACKS =====
+function generateCracks(svgEl) {
+  svgEl.innerHTML = '';
+  const numCracks = 5 + Math.floor(Math.random() * 3);
+  for (let c = 0; c < numCracks; c++) {
+    let x = 35 + Math.random() * 30;
+    let y = 25 + Math.random() * 40;
+    let pts = `${x},${y}`;
+    const segments = 6 + Math.floor(Math.random() * 6);
+    const angle = Math.random() * Math.PI * 2;
+    for (let i = 0; i < segments; i++) {
+      x += Math.cos(angle + (Math.random()-0.5)*2.5) * (3 + Math.random()*7);
+      y += Math.sin(angle + (Math.random()-0.5)*2.5) * (3 + Math.random()*7);
+      x = Math.max(5, Math.min(95, x));
+      y = Math.max(5, Math.min(95, y));
+      pts += ` ${x},${y}`;
+    }
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line.setAttribute('points', pts);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', 'rgba(30,20,10,0.8)');
+    line.setAttribute('stroke-width', (1 + Math.random()).toFixed(1));
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+    svgEl.appendChild(line);
+    // Branches
+    if (Math.random() > 0.3) {
+      const allPts = pts.split(' ');
+      const branchFrom = allPts[Math.min(2, allPts.length-1)].split(',');
+      let bx = parseFloat(branchFrom[0]), by = parseFloat(branchFrom[1]);
+      let bpts = `${bx},${by}`;
+      const bAng = angle + (Math.random()-0.5)*3;
+      for (let j = 0; j < 2 + Math.floor(Math.random()*3); j++) {
+        bx += Math.cos(bAng + (Math.random()-0.5)*1.5) * (2+Math.random()*5);
+        by += Math.sin(bAng + (Math.random()-0.5)*1.5) * (2+Math.random()*5);
+        bpts += ` ${bx},${by}`;
+      }
+      const bl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      bl.setAttribute('points', bpts);
+      bl.setAttribute('fill', 'none');
+      bl.setAttribute('stroke', 'rgba(30,20,10,0.55)');
+      bl.setAttribute('stroke-width', '0.8');
+      bl.setAttribute('stroke-linecap', 'round');
+      svgEl.appendChild(bl);
+    }
+  }
+}
+
+// ===== HATCH =====
+document.getElementById('hatchBtn').addEventListener('click', startHatch);
+
+function startHatch() {
+  if (isHatching) return;
+  isHatching = true;
+  document.getElementById('hatchBtn').disabled = true;
+  const eggs = activePanels().map(i => document.getElementById(`egg${i}`));
+  eggs.forEach(e => e.classList.add('wobbling'));
+
+  const ap = activePanels();
+
+  setTimeout(() => {
+    ap.forEach(i => { generateCracks(document.getElementById(`cracks${i}`)); document.getElementById(`cracks${i}`).style.opacity = '1'; });
+  }, 1200);
+
+  setTimeout(() => {
+    ap.forEach(i => generateCracks(document.getElementById(`cracks${i}`)));
+  }, 1800);
+
+  setTimeout(() => {
+    ap.forEach(i => {
+      const egg = document.getElementById(`egg${i}`);
+      const rect = egg.getBoundingClientRect();
+      const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+      egg.classList.remove('wobbling');
+      const anim = ANIMALS[`${panels[i].size}-${panels[i].density}-${panels[i].limbs}`];
+      spawnShellFragments(cx, cy, anim.m, anim.a);
+      spawnParticles(cx, cy);
+    });
+    revealOpponent();
+    document.getElementById('dualContainer').style.display = 'none';
+    document.getElementById('hatchBtn').style.display = 'none';
+    document.querySelector('.btn-row').style.display = 'none';
+    document.getElementById('modeToggle').style.display = 'none';
+    ap.forEach(i => {
+      const s = panels[i];
+      const key = `${s.size}-${s.density}-${s.limbs}`;
+      const animal = ANIMALS[key];
+      const mc = animal.m, ac = animal.a;
+      document.getElementById(`resultSvg${i}`).innerHTML = drawAnimal(animal.name, mc, ac);
+      document.getElementById(`resultName${i}`).textContent = animal.name;
+
+      // Stats
+      const [baseHp, count] = SIZE_STATS[s.size];
+      const [atkSpd, dmg, hpMult] = DENSITY_STATS[s.density];
+      const hp = Math.round(baseHp * hpMult);
+      const statsEl = document.getElementById(`resultStats${i}`);
+      const spdPercent = ((MAX_SPD - atkSpd + 0.3) / MAX_SPD) * 100;
+      statsEl.innerHTML = `
+        <div class="stat-row">
+          <div class="stat-label">Health</div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${hp/MAX_HP*100}%;background:linear-gradient(90deg,#e74c3c,#ff6b6b)"></div></div>
+          <div class="stat-value">${hp}</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Damage</div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${dmg/MAX_DMG*100}%;background:linear-gradient(90deg,#e67e22,#f9ca24)"></div></div>
+          <div class="stat-value">${dmg}</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Atk Speed</div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${spdPercent}%;background:linear-gradient(90deg,#3498db,#48cae4)"></div></div>
+          <div class="stat-value">${atkSpd}s</div>
+        </div>
+        <div class="stat-count"><span>x${count}</span> ${animal.name}${count > 1 ? 's' : ''}</div>
+      `;
+
+      document.getElementById(`result${i}`).classList.add('visible');
+    });
+    document.getElementById('battleBtn').style.display = '';
+    document.getElementById('tryAgainBtn').style.display = '';
+  }, 2800);
+}
+
+function spawnShellFragments(cx, cy, mc, ac) {
+  const container = document.getElementById('particles');
+  const cols = [mc, mc, mc, ac];
+  for (let i = 0; i < 12; i++) {
+    const f = document.createElement('div');
+    f.className = 'shell-fragment';
+    const s = 12+Math.random()*22;
+    const ang = Math.random()*Math.PI*2;
+    const dist = 70+Math.random()*140;
+    f.style.cssText = `width:${s}px;height:${s*0.7}px;left:${cx}px;top:${cy}px;background:${cols[Math.floor(Math.random()*cols.length)]}`;
+    f.style.setProperty('--dx', Math.cos(ang)*dist+'px');
+    f.style.setProperty('--dy', (Math.sin(ang)*dist-40)+'px');
+    f.style.setProperty('--rot', (Math.random()*720-360)+'deg');
+    container.appendChild(f);
+    setTimeout(() => f.remove(), 800);
+  }
+}
+
+function spawnParticles(cx, cy) {
+  const container = document.getElementById('particles');
+  const colors = ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#f9ca24','#ff9ff3'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const s = 4+Math.random()*8;
+    const ang = Math.random()*Math.PI*2;
+    const dist = 40+Math.random()*180;
+    p.style.cssText = `width:${s}px;height:${s}px;left:${cx}px;top:${cy}px;background:${colors[Math.floor(Math.random()*colors.length)]}`;
+    p.style.setProperty('--dx', Math.cos(ang)*dist+'px');
+    p.style.setProperty('--dy', (Math.sin(ang)*dist-60)+'px');
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+// ===== BATTLE SYSTEM =====
+let battleInterval = null;
+let battleSpeed = 1;
+let battleTeams = null;
+let battleTime = 0;
+let rngEnabled = true;
+let roundScore = [0, 0];
+let currentRound = 0;
+
+document.getElementById('multToggle').addEventListener('click', () => {
+  rngEnabled = !rngEnabled;
+  const btn = document.getElementById('multToggle');
+  btn.textContent = `RNG: ${rngEnabled ? 'ON' : 'OFF'}`;
+  btn.classList.toggle('on', rngEnabled);
+});
+
+document.getElementById('battleBtn').addEventListener('click', startBattle);
+document.getElementById('rematchBtn').addEventListener('click', () => {
+  if (battleInterval) { clearInterval(battleInterval); battleInterval = null; }
+  startBattle();
+});
+
+// Speed buttons
+document.getElementById('arenaControls').addEventListener('click', e => {
+  const btn = e.target.closest('.speed-btn');
+  if (!btn) return;
+  battleSpeed = parseInt(btn.dataset.speed);
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+});
+
+function startBattle() {
+  // Hide results & battle button
+  activePanels().forEach(i => document.getElementById(`result${i}`).classList.remove('visible'));
+  document.getElementById('battleBtn').style.display = 'none';
+  document.getElementById('tryAgainBtn').style.display = 'none';
+  document.getElementById('arenaWinner').style.display = 'none';
+  document.getElementById('arenaRound').style.display = 'none';
+  roundScore = [0, 0];
+  currentRound = 0;
+  document.getElementById('scoreT1').textContent = '0';
+  document.getElementById('scoreT2').textContent = '0';
+
+  const arena = document.getElementById('battleArena');
+  arena.classList.add('visible');
+  startRound();
+}
+
+function startRound() {
+  if (battleInterval) { clearInterval(battleInterval); battleInterval = null; }
+  battleTime = 0;
+  currentRound++;
+  document.getElementById('arenaRound').textContent = `Round ${currentRound}`;
+  document.getElementById('arenaRound').style.display = '';
+  document.getElementById('arenaWinner').style.display = 'none';
+
+  // Build teams based on mode
+  const teamPanels = gameMode === '1v1' ? [[0],[2]] : [[0,1],[2,3]];
+  battleTeams = teamPanels.map((panelIdxs, teamIdx) => {
+    const units = [];
+    let unitCounter = 0;
+    // Check for same-type synergy in 2v2
+    const types = panelIdxs.map(pi => panels[pi].limbs);
+    const hasSynergy = types.length > 1 && types[0] === types[1];
+
+    for (const pi of panelIdxs) {
+    const s = panels[pi];
+    const key = `${s.size}-${s.density}-${s.limbs}`;
+    const animal = ANIMALS[key];
+    const [baseHp, count] = SIZE_STATS[s.size];
+    const [atkSpd, dmg, hpMult] = DENSITY_STATS[s.density];
+    let hp = Math.round(baseHp * hpMult);
+    if (hasSynergy) hp = Math.round(hp * 1.2); // 20% HP boost for same-type teammates
+    const usedNames = {};
+    for (let u = 0; u < count; u++) {
+      let nick = generateName(animal.name, u);
+      usedNames[nick] = (usedNames[nick] || 0) + 1;
+      if (usedNames[nick] > 1) {
+        const numerals = ['','II','III','IV','V','VI'];
+        nick = `${nick} ${numerals[usedNames[nick] - 1]}`;
+      }
+      units.push({
+        name: animal.name,
+        nickname: nick,
+        maxHp: hp,
+        hp: hp,
+        dmg: dmg,
+        atkSpd: atkSpd,
+        atkTimer: atkSpd * (0.5 + Math.random() * 0.5),
+        alive: true,
+        target: null,
+        mc: animal.m,
+        ac: animal.a,
+        team: teamIdx,
+        idx: unitCounter,
+        type: s.limbs,
+      });
+      unitCounter++;
+    }
+    } // end panelIdxs loop
+    return units;
+  });
+
+  const teams = battleTeams;
+
+  // Build 2D stage
+  const stage = document.getElementById('battleStage');
+  // Clear old units but keep ground
+  stage.querySelectorAll('.stage-unit').forEach(e => e.remove());
+
+  const stageW = stage.offsetWidth || 800;
+  const stageH = stage.offsetHeight || 400;
+
+  // Position units: team 0 on left, team 1 on right
+  [0,1].forEach(t => {
+    const count = teams[t].length;
+    teams[t].forEach((unit, u) => {
+      const homeX = t === 0 ? 40 + Math.random() * 40 : stageW - 90 - Math.random() * 40;
+      const spacing = Math.min(55, (stageH - 100) / count);
+      const startY = (stageH - count * spacing) / 2 + 20;
+      const homeY = startY + u * spacing;
+      unit.x = homeX;
+      unit.y = homeY;
+      unit.homeX = homeX;
+      unit.homeY = homeY;
+      unit.lungeTimer = 0;
+
+      const el = document.createElement('div');
+      el.className = 'stage-unit';
+      el.id = `unit-${t}-${u}`;
+      el.style.left = unit.x + 'px';
+      el.style.top = unit.y + 'px';
+      el.innerHTML = `
+        <div class="stage-unit-svg ${t === 1 ? 'flipped' : ''}">${drawAnimal(unit.name, unit.mc, unit.ac)}</div>
+        <div class="stage-hp"><div class="stage-hp-fill" id="hp-${t}-${u}" style="width:100%"></div></div>
+        <div class="stage-name">${unit.nickname}</div>
+      `;
+      stage.appendChild(el);
+    });
+  });
+
+  function getAliveEnemies(teamIdx) {
+    return teams[1 - teamIdx].filter(u => u.alive);
+  }
+
+  function assignTarget(unit) {
+    const enemies = getAliveEnemies(unit.team);
+    if (enemies.length === 0) { unit.target = null; return; }
+    unit.target = enemies[Math.floor(Math.random() * enemies.length)];
+  }
+
+  const TICK = 1/30;
+  let animFrame = null;
+
+  // Animation loop — moves units toward targets
+  function animateUnits() {
+    [0,1].forEach(t => {
+      teams[t].forEach(unit => {
+        if (!unit.alive) return;
+        const el = document.getElementById(`unit-${unit.team}-${unit.idx}`);
+        if (!el) return;
+
+        let goalX = unit.homeX, goalY = unit.homeY;
+
+        if (unit.target && unit.target.alive) {
+          // Move toward target, stop 60px away
+          const dx = unit.target.x - unit.x;
+          const dy = unit.target.y - unit.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist > 65) {
+            goalX = unit.x + dx * 0.03;
+            goalY = unit.y + dy * 0.03;
+          } else {
+            goalX = unit.x;
+            goalY = unit.y;
+          }
+        }
+
+        // Lunge effect
+        if (unit.lungeTimer > 0) {
+          unit.lungeTimer -= TICK * battleSpeed;
+          if (unit.target) {
+            const dir = unit.team === 0 ? 1 : -1;
+            goalX = unit.x + dir * 12 * Math.max(0, unit.lungeTimer / 0.15);
+          }
+        }
+
+        unit.x += (goalX - unit.x) * 0.15;
+        unit.y += (goalY - unit.y) * 0.15;
+        el.style.left = unit.x + 'px';
+        el.style.top = unit.y + 'px';
+      });
+    });
+    animFrame = requestAnimationFrame(animateUnits);
+  }
+  animateUnits();
+
+  battleInterval = setInterval(() => {
+    const dt = TICK * battleSpeed;
+    battleTime += dt;
+
+    [0,1].forEach(t => {
+      teams[t].forEach(unit => {
+        if (!unit.alive) return;
+
+        if (!unit.target || !unit.target.alive) {
+          assignTarget(unit);
+        }
+        if (!unit.target) return;
+
+        unit.atkTimer -= dt;
+        if (unit.atkTimer <= 0) {
+          unit.atkTimer = unit.atkSpd;
+
+          // Deal damage with variance — UNCHANGED
+          const target = unit.target;
+          let mult = 1, rollType = 'normal';
+          if (rngEnabled) {
+            const roll = Math.random() * 100;
+            if (roll < 1) { mult = 0; rollType = 'miss'; }
+            else if (roll < 2) { mult = 2; rollType = 'crit'; }
+            else if (roll < 6) { mult = 0.65; rollType = 'weak'; }
+            else if (roll < 10) { mult = 1.35; rollType = 'strong'; }
+            else if (roll < 20) { mult = 0.85; rollType = 'normal'; }
+            else if (roll < 30) { mult = 1.15; rollType = 'normal'; }
+          }
+          // Type advantage: 20% damage boost
+          if (TYPE_BEATS[unit.type] === target.type) mult *= 1.2;
+          const finalDmg = Math.round(unit.dmg * mult);
+          target.hp -= finalDmg;
+
+          // Lunge attacker
+          unit.lungeTimer = 0.15;
+
+          // Damage popup on target position
+          if (rollType !== 'normal' || finalDmg > 0) {
+            const popup = document.createElement('div');
+            popup.className = `stage-dmg-popup ${rollType}-pop`;
+            if (rollType === 'crit') popup.textContent = `x2! ${finalDmg}`;
+            else if (rollType === 'miss') popup.textContent = 'MISS';
+            else if (rollType === 'strong') popup.textContent = `+35%`;
+            else if (rollType === 'weak') popup.textContent = `-35%`;
+            else popup.textContent = `-${finalDmg}`;
+            popup.style.left = (target.x + 10 + Math.random() * 20) + 'px';
+            popup.style.top = (target.y - 5) + 'px';
+            stage.appendChild(popup);
+            setTimeout(() => popup.remove(), 800);
+          }
+
+          if (target.hp <= 0) {
+            target.hp = 0;
+            target.alive = false;
+            const tgtEl = document.getElementById(`unit-${target.team}-${target.idx}`);
+            if (tgtEl) tgtEl.classList.add('dead');
+            unit.target = null;
+          }
+
+          // Update HP bar
+          const hpFill = document.getElementById(`hp-${target.team}-${target.idx}`);
+          if (hpFill) {
+            const pct = Math.max(0, target.hp / target.maxHp * 100);
+            hpFill.style.width = pct + '%';
+            if (pct > 50) hpFill.style.background = '#2ecc71';
+            else if (pct > 25) hpFill.style.background = '#f39c12';
+            else hpFill.style.background = '#e74c3c';
+          }
+        }
+      });
+    });
+
+    // Check win condition
+    const team0alive = teams[0].filter(u => u.alive).length;
+    const team1alive = teams[1].filter(u => u.alive).length;
+
+    if (team0alive === 0 || team1alive === 0) {
+      clearInterval(battleInterval);
+      battleInterval = null;
+      if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+      const winIdx = team0alive > 0 ? 0 : 1;
+      roundScore[winIdx]++;
+      document.getElementById('scoreT1').textContent = roundScore[0];
+      document.getElementById('scoreT2').textContent = roundScore[1];
+
+      // Check if someone won best of 3
+      if (roundScore[0] >= 2 || roundScore[1] >= 2) {
+        const finalWinner = roundScore[0] >= 2 ? 0 : 1;
+        const winNames = [...new Set(teams[finalWinner].map(u => u.name))].join(' & ');
+        const winnerEl = document.getElementById('arenaWinner');
+        winnerEl.textContent = `Team ${finalWinner + 1} wins ${roundScore[0]}-${roundScore[1]}! ${winNames} victorious!`;
+        winnerEl.style.display = '';
+        document.getElementById('arenaRound').style.display = 'none';
+        document.getElementById('tryAgainBtn').style.display = '';
+      } else {
+        // Next round after a short pause
+        const roundEl = document.getElementById('arenaRound');
+        roundEl.textContent = `Team ${winIdx + 1} wins round ${currentRound}!`;
+        setTimeout(() => startRound(), 1500);
+      }
+    }
+  }, TICK * 1000);
+}
+
+// ===== RESET =====
+document.getElementById('tryAgainBtn').addEventListener('click', () => {
+  if (battleInterval) { clearInterval(battleInterval); battleInterval = null; }
+  [0,1,2,3].forEach(i => document.getElementById(`result${i}`).classList.remove('visible'));
+  document.getElementById('battleBtn').style.display = 'none';
+  document.getElementById('tryAgainBtn').style.display = 'none';
+  document.getElementById('battleArena').classList.remove('visible');
+  document.getElementById('arenaWinner').style.display = 'none';
+  document.getElementById('arenaRound').style.display = 'none';
+  document.getElementById('dualContainer').style.display = '';
+  document.getElementById('hatchBtn').style.display = '';
+  document.querySelector('.btn-row').style.display = '';
+  document.getElementById('modeToggle').style.display = '';
+  revealOpponent();
+  document.getElementById('hatchBtn').disabled = false;
+  isHatching = false;
+  applyMode();
+  [0,1,2,3].forEach(i => {
+    document.getElementById(`cracks${i}`).style.opacity = '0';
+    document.getElementById(`cracks${i}`).innerHTML = '';
+    updateEgg(i);
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !isHatching) { e.preventDefault(); startHatch(); }
+  if (e.code === 'Escape') {
+    document.getElementById('matchupOverlay').classList.remove('visible');
+    document.getElementById('createChalOverlay').classList.remove('visible');
+    document.getElementById('acceptChalOverlay').classList.remove('visible');
+  }
+});
+
+// ===== CHALLENGE SYSTEM =====
+let challengeOpponent = null; // {size, density, limbs}
+
+function chalEncode(size, density, type) {
+  // 4-digit code: first digit = random salt, then size+density+type
+  const salt = Math.floor(Math.random() * 10);
+  return '' + salt + size + density + type;
+}
+
+function chalDecode(code) {
+  code = code.trim();
+  if (code.length !== 4) return null;
+  const size = parseInt(code[1]);
+  const density = parseInt(code[2]);
+  const type = parseInt(code[3]);
+  if (isNaN(size) || isNaN(density) || isNaN(type)) return null;
+  if (size > 2 || density > 2 || type > 3) return null;
+  return { size, density, limbs: type };
+}
+
+// Wire picker buttons inside overlays
+function wireChalPicker(prefix) {
+  const state = { size: 1, density: 1, type: 2 };
+  [`${prefix}Size`, `${prefix}Dens`].forEach(rowId => {
+    document.getElementById(rowId).querySelectorAll('.opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(rowId).querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (rowId.includes('Size')) state.size = parseInt(btn.dataset.val);
+        else state.density = parseInt(btn.dataset.val);
+      });
+    });
+  });
+  document.getElementById(`${prefix}Type`).querySelectorAll('.limb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById(`${prefix}Type`).querySelectorAll('.limb-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.type = parseInt(btn.dataset.val);
+    });
+  });
+  return state;
+}
+
+const chalCreateState = wireChalPicker('chal');
+const chalAcceptState = wireChalPicker('accept');
+
+// Create Challenge
+document.getElementById('createChalBtn').addEventListener('click', () => {
+  document.getElementById('chalCode').style.display = 'none';
+  document.getElementById('chalCopyBtn').style.display = 'none';
+  document.getElementById('createChalConfirm').style.display = '';
+  document.getElementById('createPicker').style.display = '';
+  document.getElementById('createChalStatus').textContent = '';
+  document.getElementById('createChalOverlay').classList.add('visible');
+});
+
+document.getElementById('createChalConfirm').addEventListener('click', () => {
+  const code = chalEncode(chalCreateState.size, chalCreateState.density, chalCreateState.type);
+  document.getElementById('chalCode').textContent = code;
+  document.getElementById('chalCode').style.display = '';
+  document.getElementById('chalCopyBtn').style.display = '';
+  document.getElementById('createChalConfirm').style.display = 'none';
+  document.getElementById('createPicker').style.display = 'none';
+  document.getElementById('createChalStatus').textContent = 'Send this code to your opponent!';
+  document.getElementById('createChalStatus').style.color = '#4cc9f0';
+});
+
+document.getElementById('chalCopyBtn').addEventListener('click', () => {
+  const code = document.getElementById('chalCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    document.getElementById('createChalStatus').textContent = 'Copied!';
+    document.getElementById('createChalStatus').style.color = '#2ecc71';
+  }).catch(() => {
+    document.getElementById('createChalStatus').textContent = 'Select and copy manually';
+  });
+});
+
+document.getElementById('createChalClose').addEventListener('click', () => {
+  document.getElementById('createChalOverlay').classList.remove('visible');
+});
+document.getElementById('createChalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+});
+
+// Accept Challenge
+document.getElementById('acceptChalBtn').addEventListener('click', () => {
+  document.getElementById('chalInput').value = '';
+  document.getElementById('acceptPicker').style.display = 'none';
+  document.getElementById('acceptChalConfirm').style.display = 'none';
+  document.getElementById('acceptChalJoin').style.display = '';
+  document.getElementById('chalInput').style.display = '';
+  document.getElementById('acceptTitle').textContent = 'Accept Challenge';
+  document.getElementById('acceptDesc').textContent = "Enter your opponent's 4-digit code.";
+  document.getElementById('acceptChalStatus').textContent = '';
+  challengeOpponent = null;
+  document.getElementById('acceptChalOverlay').classList.add('visible');
+  document.getElementById('chalInput').focus();
+});
+
+document.getElementById('acceptChalJoin').addEventListener('click', () => {
+  const data = chalDecode(document.getElementById('chalInput').value);
+  if (!data) {
+    document.getElementById('acceptChalStatus').textContent = 'Invalid code!';
+    document.getElementById('acceptChalStatus').style.color = '#e74c3c';
+    return;
+  }
+  challengeOpponent = data;
+  // Hide code input, show egg picker
+  document.getElementById('chalInput').style.display = 'none';
+  document.getElementById('acceptChalJoin').style.display = 'none';
+  document.getElementById('acceptTitle').textContent = 'Pick Your Egg';
+  document.getElementById('acceptDesc').textContent = 'Choose your fighter, then press Fight!';
+  document.getElementById('acceptPicker').style.display = '';
+  document.getElementById('acceptChalConfirm').style.display = '';
+  document.getElementById('acceptChalStatus').textContent = '';
+});
+
+document.getElementById('acceptChalConfirm').addEventListener('click', () => {
+  if (!challengeOpponent) return;
+  document.getElementById('acceptChalOverlay').classList.remove('visible');
+
+  // Set up 1v1 battle: panel 0 = accepter's pick, panel 2 = opponent's pick
+  gameMode = '1v1';
+  applyMode();
+
+  // Load accepter's pick into panel 0
+  panels[0].size = chalAcceptState.size;
+  panels[0].density = chalAcceptState.density;
+  panels[0].limbs = chalAcceptState.type;
+  document.getElementById('size0').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.size));
+  document.getElementById('dens0').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.density));
+  document.getElementById('limb0').querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.type));
+  updateEgg(0);
+
+  // Load opponent into panel 2
+  panels[2].size = challengeOpponent.size;
+  panels[2].density = challengeOpponent.density;
+  panels[2].limbs = challengeOpponent.limbs;
+  document.getElementById('size2').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.size));
+  document.getElementById('dens2').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.density));
+  document.getElementById('limb2').querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.limbs));
+  updateEgg(2);
+
+  // Auto-hatch
+  challengeOpponent = null;
+  startHatch();
+});
+
+document.getElementById('acceptChalClose').addEventListener('click', () => {
+  document.getElementById('acceptChalOverlay').classList.remove('visible');
+});
+document.getElementById('acceptChalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+});
+
+// ===== MATCHUP CHART =====
+document.getElementById('matchupToggle').addEventListener('click', () => {
+  const overlay = document.getElementById('matchupOverlay');
+  overlay.classList.add('visible');
+  if (!document.getElementById('matchupTable')) buildMatchupTable();
+});
+document.getElementById('matchupClose').addEventListener('click', () => {
+  document.getElementById('matchupOverlay').classList.remove('visible');
+});
+document.getElementById('matchupOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+});
+
+function simBattle(sA, dA, tA, sB, dB, tB) {
+  const [baseHpA, countA] = SIZE_STATS[sA];
+  const [spdA, baseDmgA, hpMultA] = DENSITY_STATS[dA];
+  const hpA = Math.round(baseHpA * hpMultA);
+  const dmgA = TYPE_BEATS[tA] === tB ? Math.round(baseDmgA * 1.2) : baseDmgA;
+  const [baseHpB, countB] = SIZE_STATS[sB];
+  const [spdB, baseDmgB, hpMultB] = DENSITY_STATS[dB];
+  const hpB = Math.round(baseHpB * hpMultB);
+  const dmgB = TYPE_BEATS[tB] === tA ? Math.round(baseDmgB * 1.2) : baseDmgB;
+
+  const teamA = []; for (let i = 0; i < countA; i++) teamA.push({ hp: hpA, timer: spdA });
+  const teamB = []; for (let i = 0; i < countB; i++) teamB.push({ hp: hpB, timer: spdB });
+
+  const dt = 0.05;
+  let time = 0;
+  while (time < 50000) {
+    time += dt;
+    const aliveA = teamA.filter(u => u.hp > 0);
+    const aliveB = teamB.filter(u => u.hp > 0);
+    if (!aliveA.length || !aliveB.length) break;
+
+    for (const u of aliveA) {
+      u.timer -= dt;
+      if (u.timer <= 0.025) {
+        u.timer += spdA;
+        const t = teamB.find(x => x.hp > 0);
+        if (t) t.hp -= dmgA;
+      }
+    }
+    for (const u of aliveB) {
+      u.timer -= dt;
+      if (u.timer <= 0.025) {
+        u.timer += spdB;
+        const t = teamA.find(x => x.hp > 0);
+        if (t) t.hp -= dmgB;
+      }
+    }
+  }
+  const aLeft = teamA.filter(u => u.hp > 0).length;
+  const bLeft = teamB.filter(u => u.hp > 0).length;
+  return { aLeft, bLeft, time: time.toFixed(1) };
+}
+
+function buildMatchupTable() {
+  const profiles = [];
+  for (let s = 0; s < 3; s++) {
+    for (let d = 0; d < 3; d++) {
+      const [baseHp, count] = SIZE_STATS[s];
+      const [spd, dmg, hpMult] = DENSITY_STATS[d];
+      const hp = Math.round(baseHp * hpMult);
+      profiles.push({ s, d, label: `${sizeNames[s]}/${densityNames[d]}`, detail: `${count}x ${hp}hp ${dmg}dmg ${spd}s` });
+    }
+  }
+
+  let html = '<table class="matchup-table" id="matchupTable"><thead><tr><th class="corner"></th>';
+  for (const p of profiles) html += `<th class="col-header" title="${p.detail}">${p.label}</th>`;
+  html += '</tr></thead><tbody>';
+
+  for (let i = 0; i < profiles.length; i++) {
+    html += `<tr><td class="row-header" title="${profiles[i].detail}">${profiles[i].label}</td>`;
+    for (let j = 0; j < profiles.length; j++) {
+      if (i === j) {
+        html += '<td class="mirror">Draw</td>';
+      } else {
+        const r = simBattle(profiles[i].s, profiles[i].d, 0, profiles[j].s, profiles[j].d, 0);
+        if (r.aLeft > 0) {
+          html += `<td class="win1" title="${profiles[i].label} beats ${profiles[j].label}">${r.aLeft} left / ${r.time}s</td>`;
+        } else if (r.bLeft > 0) {
+          html += `<td class="win2" title="${profiles[j].label} beats ${profiles[i].label}">${r.bLeft} left / ${r.time}s</td>`;
+        } else {
+          html += `<td class="draw">Draw</td>`;
+        }
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('matchupTableContainer').innerHTML = html;
+}
+</script>
+
+
+</body></html>
