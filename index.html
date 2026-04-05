@@ -367,71 +367,72 @@
   @media (max-width: 1100px) {
     .dual-container { flex-wrap: wrap; }
   }
-  /* Party system */
+  /* Challenge system */
   .btn-row {
     display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 5px;
   }
-  .party-btn {
+  .chal-btn {
     padding: 8px 20px; border-radius: 25px;
     border: 2px solid rgba(255,255,255,0.12); background: transparent;
     color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
     font-weight: 600; cursor: pointer; transition: all 0.2s;
   }
-  .party-btn:hover { border-color: #4cc9f0; color: #4cc9f0; }
-  .party-overlay {
+  .chal-btn:hover { border-color: #4cc9f0; color: #4cc9f0; }
+  .chal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center; padding: 20px;
+    background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;
   }
-  .party-overlay.visible { display: flex; }
-  .party-panel {
-    background: #1a1a2e; border-radius: 16px; padding: 28px;
-    max-width: 450px; width: 100%; border: 1px solid rgba(255,255,255,0.1);
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  .chal-overlay.visible { display: flex; }
+  .chal-panel {
+    background: #1a1a2e; border-radius: 20px; padding: 30px;
+    max-width: 380px; width: 100%; border: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
     position: relative;
   }
-  .party-title { font-size: 1.2rem; font-weight: 700; color: #ffd700; }
-  .party-desc { font-size: 0.8rem; color: #888; font-family: 'Inter', sans-serif; text-align: center; }
-  .party-code {
+  .chal-title { font-size: 1.3rem; font-weight: 700; color: #ffd700; }
+  .chal-desc { font-size: 0.8rem; color: #888; font-family: 'Inter', sans-serif; text-align: center; line-height: 1.5; }
+  .chal-code {
     padding: 14px 30px; background: rgba(0,0,0,0.4); border-radius: 12px;
-    font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
-    color: #4cc9f0; letter-spacing: 6px; border: 1px solid rgba(76,201,240,0.3);
+    font-family: 'Fredoka', sans-serif; font-size: 2.2rem; font-weight: 700;
+    color: #4cc9f0; letter-spacing: 8px; border: 1px solid rgba(76,201,240,0.3);
     user-select: all;
   }
-  .party-input {
-    width: 200px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 12px;
-    font-family: 'Fredoka', sans-serif; font-size: 1.8rem; font-weight: 700;
-    color: #fff; text-align: center; letter-spacing: 6px;
+  .chal-input {
+    width: 180px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
+    color: #fff; text-align: center; letter-spacing: 8px;
     border: 1px solid rgba(255,255,255,0.15); outline: none;
   }
-  .party-input:focus { border-color: #4cc9f0; }
-  .party-action {
-    padding: 10px 30px; border-radius: 25px; border: none;
+  .chal-input:focus { border-color: #4cc9f0; }
+  .chal-action {
+    padding: 12px 35px; border-radius: 25px; border: none;
     background: linear-gradient(135deg, #4cc9f0, #3a86ff);
-    color: #fff; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
+    color: #fff; font-family: 'Fredoka', sans-serif; font-size: 1rem;
     font-weight: 600; cursor: pointer; transition: all 0.2s;
   }
-  .party-action:hover { transform: scale(1.05); }
-  .party-close {
+  .chal-action:hover { transform: scale(1.05); }
+  .chal-close {
     position: absolute; top: 12px; right: 16px; background: none; border: none;
     color: #888; font-size: 1.5rem; cursor: pointer;
   }
-  .party-close:hover { color: #fff; }
-  .party-status { font-size: 0.8rem; font-family: 'Inter', sans-serif; }
-
-  /* Hidden opponent panel */
-  .egg-panel.hidden-opponent {
-    pointer-events: none; position: relative;
+  .chal-close:hover { color: #fff; }
+  .chal-status { font-size: 0.8rem; font-family: 'Inter', sans-serif; }
+  .chal-egg-picker {
+    display: flex; flex-direction: column; gap: 10px; width: 100%;
   }
-  .egg-panel.hidden-opponent .controls-grid,
-  .egg-panel.hidden-opponent .egg-holder { filter: blur(12px); }
-  .egg-panel.hidden-opponent .rand-btn { display: none; }
-  .opponent-mask {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka', sans-serif; font-size: 1.1rem; color: #ffd700;
-    font-weight: 700; z-index: 5; text-align: center;
-    background: rgba(26,26,46,0.5); border-radius: 20px;
+  .chal-egg-picker .control-group label {
+    display: block; font-size: 0.72rem; color: #aaa; margin-bottom: 5px;
+    font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px;
   }
+  .chal-egg-picker .option-row { display: flex; gap: 5px; }
+  .chal-egg-picker .opt-btn, .chal-egg-picker .limb-btn {
+    flex: 1; padding: 8px 3px; border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+    color: #999; font-family: 'Fredoka', sans-serif; font-size: 0.75rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .chal-egg-picker .opt-btn:hover, .chal-egg-picker .limb-btn:hover { border-color: rgba(255,215,0,0.4); color: #ddd; }
+  .chal-egg-picker .opt-btn.selected, .chal-egg-picker .limb-btn.selected { background: #ffd700; border-color: #ffd700; color: #1a1a2e; }
 
   @media (max-width: 800px) {
     h1 { font-size: 1.7rem; }
@@ -446,31 +447,82 @@
 <div class="dual-container" id="dualContainer"></div>
 <div class="btn-row">
   <button class="randomise-all" id="randomiseAll">Randomise All</button>
-  <button class="party-btn" id="createPartyBtn">Create Party</button>
-  <button class="party-btn" id="joinPartyBtn">Join Party</button>
+  <button class="chal-btn" id="createChalBtn">Create Challenge</button>
+  <button class="chal-btn" id="acceptChalBtn">Accept Challenge</button>
 </div>
 <button class="hatch-btn" id="hatchBtn">Hatch All!</button>
 
-<div class="party-overlay" id="createOverlay">
-  <div class="party-panel">
-    <button class="party-close" id="createClose">&times;</button>
-    <div class="party-title">Create Party</div>
-    <div class="party-desc">Pick your team first, then click Create. Send the code to your opponent.</div>
-    <div class="party-code" id="partyCode" style="display:none;"></div>
-    <button class="party-action" id="createGoBtn">Create</button>
-    <button class="party-action" id="copyPartyBtn" style="display:none;">Copy Code</button>
-    <div class="party-status" id="createStatus"></div>
+<!-- Create Challenge overlay -->
+<div class="chal-overlay" id="createChalOverlay">
+  <div class="chal-panel">
+    <button class="chal-close" id="createChalClose">&times;</button>
+    <div class="chal-title">Create Challenge</div>
+    <div class="chal-desc">Pick your egg, then confirm to get a code.</div>
+    <div class="chal-egg-picker" id="createPicker">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="chalSize">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="chalDens">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="chalType">
+          <button class="limb-btn" data-val="0">🌊 Ocean</button>
+          <button class="limb-btn" data-val="1">🏜️ Desert</button>
+          <button class="limb-btn selected" data-val="2">🌿 Jungle</button>
+          <button class="limb-btn" data-val="3">🌪️ Air</button>
+        </div>
+      </div>
+    </div>
+    <button class="chal-action" id="createChalConfirm">Confirm</button>
+    <div class="chal-code" id="chalCode" style="display:none;"></div>
+    <button class="chal-action" id="chalCopyBtn" style="display:none;">Copy Code</button>
+    <div class="chal-status" id="createChalStatus"></div>
   </div>
 </div>
 
-<div class="party-overlay" id="joinOverlay">
-  <div class="party-panel">
-    <button class="party-close" id="joinClose">&times;</button>
-    <div class="party-title">Join Party</div>
-    <div class="party-desc">Enter your opponent's code. Then pick your team and hatch!</div>
-    <input class="party-input" id="joinInput" placeholder="CODE" maxlength="8">
-    <button class="party-action" id="joinGoBtn">Join</button>
-    <div class="party-status" id="joinStatus"></div>
+<!-- Accept Challenge overlay -->
+<div class="chal-overlay" id="acceptChalOverlay">
+  <div class="chal-panel">
+    <button class="chal-close" id="acceptChalClose">&times;</button>
+    <div class="chal-title" id="acceptTitle">Accept Challenge</div>
+    <div class="chal-desc" id="acceptDesc">Enter your opponent's 4-digit code.</div>
+    <input class="chal-input" id="chalInput" placeholder="0000" maxlength="4">
+    <button class="chal-action" id="acceptChalJoin">Join</button>
+    <div class="chal-egg-picker" id="acceptPicker" style="display:none;">
+      <div class="control-group"><label>Size</label>
+        <div class="option-row" id="acceptSize">
+          <button class="opt-btn" data-val="0">Small</button>
+          <button class="opt-btn selected" data-val="1">Medium</button>
+          <button class="opt-btn" data-val="2">Large</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Density</label>
+        <div class="option-row" id="acceptDens">
+          <button class="opt-btn" data-val="0">Light</button>
+          <button class="opt-btn selected" data-val="1">Normal</button>
+          <button class="opt-btn" data-val="2">Heavy</button>
+        </div>
+      </div>
+      <div class="control-group"><label>Type</label>
+        <div class="option-row" id="acceptType">
+          <button class="limb-btn" data-val="0">🌊 Ocean</button>
+          <button class="limb-btn" data-val="1">🏜️ Desert</button>
+          <button class="limb-btn selected" data-val="2">🌿 Jungle</button>
+          <button class="limb-btn" data-val="3">🌪️ Air</button>
+        </div>
+      </div>
+    </div>
+    <button class="chal-action" id="acceptChalConfirm" style="display:none;">Fight!</button>
+    <div class="chal-status" id="acceptChalStatus"></div>
   </div>
 </div>
 <div class="results-row" id="resultsRow">
@@ -1926,162 +1978,165 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Space' && !isHatching) { e.preventDefault(); startHatch(); }
   if (e.code === 'Escape') {
     document.getElementById('matchupOverlay').classList.remove('visible');
-    document.getElementById('createOverlay').classList.remove('visible');
-    document.getElementById('joinOverlay').classList.remove('visible');
+    document.getElementById('createChalOverlay').classList.remove('visible');
+    document.getElementById('acceptChalOverlay').classList.remove('visible');
   }
 });
 
-// ===== PARTY SYSTEM =====
-let partyMode = false; // true when opponent is loaded and hidden
+// ===== CHALLENGE SYSTEM =====
+let challengeOpponent = null; // {size, density, limbs}
 
-function encodeTeam(panelIdxs) {
-  let code = panelIdxs.length === 1 ? '1' : '2';
-  for (const i of panelIdxs) {
-    code += panels[i].size.toString() + panels[i].density.toString() + panels[i].limbs.toString();
-  }
-  return code;
+function chalEncode(size, density, type) {
+  // 4-digit code: first digit = random salt, then size+density+type
+  const salt = Math.floor(Math.random() * 10);
+  return '' + salt + size + density + type;
 }
 
-function decodeTeam(code) {
-  code = code.trim().toUpperCase();
-  if (!code || code.length < 4) return null;
-  const mode = code[0] === '1' ? '1v1' : '2v2';
-  const eggs = [];
-  const digits = code.slice(1);
-  for (let i = 0; i < digits.length; i += 3) {
-    if (i + 2 >= digits.length) return null;
-    const size = parseInt(digits[i]);
-    const density = parseInt(digits[i+1]);
-    const type = parseInt(digits[i+2]);
-    if (isNaN(size) || isNaN(density) || isNaN(type)) return null;
-    if (size > 2 || density > 2 || type > 3) return null;
-    eggs.push({ size, density, limbs: type });
-  }
-  return { mode, eggs };
+function chalDecode(code) {
+  code = code.trim();
+  if (code.length !== 4) return null;
+  const size = parseInt(code[1]);
+  const density = parseInt(code[2]);
+  const type = parseInt(code[3]);
+  if (isNaN(size) || isNaN(density) || isNaN(type)) return null;
+  if (size > 2 || density > 2 || type > 3) return null;
+  return { size, density, limbs: type };
 }
 
-function loadOpponent(data) {
-  gameMode = data.mode;
-  applyMode();
-  const targetPanels = gameMode === '1v1' ? [2] : [2, 3];
-  data.eggs.forEach((egg, i) => {
-    if (i < targetPanels.length) {
-      const pi = targetPanels[i];
-      panels[pi].size = egg.size;
-      panels[pi].density = egg.density;
-      panels[pi].limbs = egg.limbs;
-      document.getElementById(`size${pi}`).querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.size));
-      document.getElementById(`dens${pi}`).querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.density));
-      document.getElementById(`limb${pi}`).querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.limbs));
-      updateEgg(pi);
-    }
+// Wire picker buttons inside overlays
+function wireChalPicker(prefix) {
+  const state = { size: 1, density: 1, type: 2 };
+  [`${prefix}Size`, `${prefix}Dens`].forEach(rowId => {
+    document.getElementById(rowId).querySelectorAll('.opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(rowId).querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (rowId.includes('Size')) state.size = parseInt(btn.dataset.val);
+        else state.density = parseInt(btn.dataset.val);
+      });
+    });
   });
-  hideOpponent();
-}
-
-function hideOpponent() {
-  partyMode = true;
-  const opPanels = gameMode === '1v1' ? [2] : [2, 3];
-  opPanels.forEach(pi => {
-    const panel = document.getElementById(`panel${pi}`);
-    panel.classList.add('hidden-opponent');
-    if (!panel.querySelector('.opponent-mask')) {
-      const mask = document.createElement('div');
-      mask.className = 'opponent-mask';
-      mask.textContent = '? Opponent ?';
-      panel.appendChild(mask);
-    }
+  document.getElementById(`${prefix}Type`).querySelectorAll('.limb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById(`${prefix}Type`).querySelectorAll('.limb-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.type = parseInt(btn.dataset.val);
+    });
   });
+  return state;
 }
 
-function revealOpponent() {
-  partyMode = false;
-  [0,1,2,3].forEach(pi => {
-    const panel = document.getElementById(`panel${pi}`);
-    panel.classList.remove('hidden-opponent');
-    const mask = panel.querySelector('.opponent-mask');
-    if (mask) mask.remove();
-  });
-}
+const chalCreateState = wireChalPicker('chal');
+const chalAcceptState = wireChalPicker('accept');
 
-// Create Party
-document.getElementById('createPartyBtn').addEventListener('click', () => {
-  document.getElementById('partyCode').style.display = 'none';
-  document.getElementById('copyPartyBtn').style.display = 'none';
-  document.getElementById('createStatus').textContent = '';
-  document.getElementById('createGoBtn').style.display = '';
-  document.getElementById('createOverlay').classList.add('visible');
+// Create Challenge
+document.getElementById('createChalBtn').addEventListener('click', () => {
+  document.getElementById('chalCode').style.display = 'none';
+  document.getElementById('chalCopyBtn').style.display = 'none';
+  document.getElementById('createChalConfirm').style.display = '';
+  document.getElementById('createPicker').style.display = '';
+  document.getElementById('createChalStatus').textContent = '';
+  document.getElementById('createChalOverlay').classList.add('visible');
 });
 
-document.getElementById('createGoBtn').addEventListener('click', () => {
-  const idxs = gameMode === '1v1' ? [0] : [0, 1];
-  const code = encodeTeam(idxs);
-  document.getElementById('partyCode').textContent = code;
-  document.getElementById('partyCode').style.display = '';
-  document.getElementById('copyPartyBtn').style.display = '';
-  document.getElementById('createGoBtn').style.display = 'none';
-  document.getElementById('createStatus').textContent = 'Send this code to your opponent!';
-  document.getElementById('createStatus').style.color = '#4cc9f0';
+document.getElementById('createChalConfirm').addEventListener('click', () => {
+  const code = chalEncode(chalCreateState.size, chalCreateState.density, chalCreateState.type);
+  document.getElementById('chalCode').textContent = code;
+  document.getElementById('chalCode').style.display = '';
+  document.getElementById('chalCopyBtn').style.display = '';
+  document.getElementById('createChalConfirm').style.display = 'none';
+  document.getElementById('createPicker').style.display = 'none';
+  document.getElementById('createChalStatus').textContent = 'Send this code to your opponent!';
+  document.getElementById('createChalStatus').style.color = '#4cc9f0';
 });
 
-document.getElementById('copyPartyBtn').addEventListener('click', () => {
-  const code = document.getElementById('partyCode').textContent;
+document.getElementById('chalCopyBtn').addEventListener('click', () => {
+  const code = document.getElementById('chalCode').textContent;
   navigator.clipboard.writeText(code).then(() => {
-    document.getElementById('createStatus').textContent = 'Copied!';
-    document.getElementById('createStatus').style.color = '#2ecc71';
+    document.getElementById('createChalStatus').textContent = 'Copied!';
+    document.getElementById('createChalStatus').style.color = '#2ecc71';
   }).catch(() => {
-    document.getElementById('createStatus').textContent = 'Select the code and copy manually';
-    document.getElementById('createStatus').style.color = '#e67e22';
+    document.getElementById('createChalStatus').textContent = 'Select and copy manually';
   });
 });
 
-document.getElementById('createClose').addEventListener('click', () => {
-  document.getElementById('createOverlay').classList.remove('visible');
+document.getElementById('createChalClose').addEventListener('click', () => {
+  document.getElementById('createChalOverlay').classList.remove('visible');
 });
-document.getElementById('createOverlay').addEventListener('click', e => {
+document.getElementById('createChalOverlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
 });
 
-// Join Party
-document.getElementById('joinPartyBtn').addEventListener('click', () => {
-  document.getElementById('joinInput').value = '';
-  document.getElementById('joinStatus').textContent = '';
-  document.getElementById('joinOverlay').classList.add('visible');
-  document.getElementById('joinInput').focus();
+// Accept Challenge
+document.getElementById('acceptChalBtn').addEventListener('click', () => {
+  document.getElementById('chalInput').value = '';
+  document.getElementById('acceptPicker').style.display = 'none';
+  document.getElementById('acceptChalConfirm').style.display = 'none';
+  document.getElementById('acceptChalJoin').style.display = '';
+  document.getElementById('chalInput').style.display = '';
+  document.getElementById('acceptTitle').textContent = 'Accept Challenge';
+  document.getElementById('acceptDesc').textContent = "Enter your opponent's 4-digit code.";
+  document.getElementById('acceptChalStatus').textContent = '';
+  challengeOpponent = null;
+  document.getElementById('acceptChalOverlay').classList.add('visible');
+  document.getElementById('chalInput').focus();
 });
 
-document.getElementById('joinGoBtn').addEventListener('click', () => {
-  const code = document.getElementById('joinInput').value.trim();
-  const data = decodeTeam(code);
+document.getElementById('acceptChalJoin').addEventListener('click', () => {
+  const data = chalDecode(document.getElementById('chalInput').value);
   if (!data) {
-    document.getElementById('joinStatus').textContent = 'Invalid code!';
-    document.getElementById('joinStatus').style.color = '#e74c3c';
+    document.getElementById('acceptChalStatus').textContent = 'Invalid code!';
+    document.getElementById('acceptChalStatus').style.color = '#e74c3c';
     return;
   }
-  loadOpponent(data);
-  document.getElementById('joinStatus').textContent = 'Opponent loaded! Pick your team and hatch.';
-  document.getElementById('joinStatus').style.color = '#2ecc71';
-  setTimeout(() => {
-    document.getElementById('joinOverlay').classList.remove('visible');
-  }, 1000);
+  challengeOpponent = data;
+  // Hide code input, show egg picker
+  document.getElementById('chalInput').style.display = 'none';
+  document.getElementById('acceptChalJoin').style.display = 'none';
+  document.getElementById('acceptTitle').textContent = 'Pick Your Egg';
+  document.getElementById('acceptDesc').textContent = 'Choose your fighter, then press Fight!';
+  document.getElementById('acceptPicker').style.display = '';
+  document.getElementById('acceptChalConfirm').style.display = '';
+  document.getElementById('acceptChalStatus').textContent = '';
 });
 
-document.getElementById('joinClose').addEventListener('click', () => {
-  document.getElementById('joinOverlay').classList.remove('visible');
+document.getElementById('acceptChalConfirm').addEventListener('click', () => {
+  if (!challengeOpponent) return;
+  document.getElementById('acceptChalOverlay').classList.remove('visible');
+
+  // Set up 1v1 battle: panel 0 = accepter's pick, panel 2 = opponent's pick
+  gameMode = '1v1';
+  applyMode();
+
+  // Load accepter's pick into panel 0
+  panels[0].size = chalAcceptState.size;
+  panels[0].density = chalAcceptState.density;
+  panels[0].limbs = chalAcceptState.type;
+  document.getElementById('size0').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.size));
+  document.getElementById('dens0').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.density));
+  document.getElementById('limb0').querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === chalAcceptState.type));
+  updateEgg(0);
+
+  // Load opponent into panel 2
+  panels[2].size = challengeOpponent.size;
+  panels[2].density = challengeOpponent.density;
+  panels[2].limbs = challengeOpponent.limbs;
+  document.getElementById('size2').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.size));
+  document.getElementById('dens2').querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.density));
+  document.getElementById('limb2').querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === challengeOpponent.limbs));
+  updateEgg(2);
+
+  // Auto-hatch
+  challengeOpponent = null;
+  startHatch();
 });
-document.getElementById('joinOverlay').addEventListener('click', e => {
+
+document.getElementById('acceptChalClose').addEventListener('click', () => {
+  document.getElementById('acceptChalOverlay').classList.remove('visible');
+});
+document.getElementById('acceptChalOverlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
 });
-
-// URL code support
-(function checkUrlCode() {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('c');
-  if (code) {
-    const data = decodeTeam(code);
-    if (data) loadOpponent(data);
-  }
-})();
 
 // ===== MATCHUP CHART =====
 document.getElementById('matchupToggle').addEventListener('click', () => {
