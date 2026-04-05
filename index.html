@@ -237,6 +237,20 @@
   .stage-dmg-popup.weak-pop { color: #888; }
   .stage-dmg-popup.miss-pop { color: #555; }
   .stage-dmg-popup.normal-pop { color: #ccc; }
+  .round-score {
+    display: flex; align-items: center; gap: 15px;
+    font-family: 'Fredoka', sans-serif;
+  }
+  .score-t1, .score-t2 {
+    font-size: 2rem; font-weight: 800; width: 40px; text-align: center;
+  }
+  .score-t1 { color: #48cae4; }
+  .score-t2 { color: #ff6b6b; }
+  .score-label { color: #555; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+  .arena-round {
+    font-size: 1.2rem; font-weight: 700; color: #ffd700;
+    font-family: 'Fredoka', sans-serif;
+  }
   .arena-winner {
     font-size: 2rem; font-weight: 700;
     background: linear-gradient(135deg, #ffd700, #ff6b6b);
@@ -262,6 +276,15 @@
   }
   .rematch-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
   /* Matchup chart */
+  .mode-toggle {
+    position: fixed; bottom: 60px; left: 20px; z-index: 50;
+    padding: 10px 18px; border-radius: 30px;
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #aaa; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .mode-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
   .mult-toggle {
     position: fixed; bottom: 20px; left: 20px; z-index: 50;
     padding: 10px 18px; border-radius: 30px;
@@ -344,6 +367,72 @@
   @media (max-width: 1100px) {
     .dual-container { flex-wrap: wrap; }
   }
+  /* Party system */
+  .btn-row {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 5px;
+  }
+  .party-btn {
+    padding: 8px 20px; border-radius: 25px;
+    border: 2px solid rgba(255,255,255,0.12); background: transparent;
+    color: #888; font-family: 'Fredoka', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .party-btn:hover { border-color: #4cc9f0; color: #4cc9f0; }
+  .party-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center; padding: 20px;
+  }
+  .party-overlay.visible { display: flex; }
+  .party-panel {
+    background: #1a1a2e; border-radius: 16px; padding: 28px;
+    max-width: 450px; width: 100%; border: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    position: relative;
+  }
+  .party-title { font-size: 1.2rem; font-weight: 700; color: #ffd700; }
+  .party-desc { font-size: 0.8rem; color: #888; font-family: 'Inter', sans-serif; text-align: center; }
+  .party-code {
+    padding: 14px 30px; background: rgba(0,0,0,0.4); border-radius: 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
+    color: #4cc9f0; letter-spacing: 6px; border: 1px solid rgba(76,201,240,0.3);
+    user-select: all;
+  }
+  .party-input {
+    width: 200px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 1.8rem; font-weight: 700;
+    color: #fff; text-align: center; letter-spacing: 6px;
+    border: 1px solid rgba(255,255,255,0.15); outline: none;
+  }
+  .party-input:focus { border-color: #4cc9f0; }
+  .party-action {
+    padding: 10px 30px; border-radius: 25px; border: none;
+    background: linear-gradient(135deg, #4cc9f0, #3a86ff);
+    color: #fff; font-family: 'Fredoka', sans-serif; font-size: 0.9rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .party-action:hover { transform: scale(1.05); }
+  .party-close {
+    position: absolute; top: 12px; right: 16px; background: none; border: none;
+    color: #888; font-size: 1.5rem; cursor: pointer;
+  }
+  .party-close:hover { color: #fff; }
+  .party-status { font-size: 0.8rem; font-family: 'Inter', sans-serif; }
+
+  /* Hidden opponent panel */
+  .egg-panel.hidden-opponent {
+    pointer-events: none; position: relative;
+  }
+  .egg-panel.hidden-opponent .controls-grid,
+  .egg-panel.hidden-opponent .egg-holder { filter: blur(12px); }
+  .egg-panel.hidden-opponent .rand-btn { display: none; }
+  .opponent-mask {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fredoka', sans-serif; font-size: 1.1rem; color: #ffd700;
+    font-weight: 700; z-index: 5; text-align: center;
+    background: rgba(26,26,46,0.5); border-radius: 20px;
+  }
+
   @media (max-width: 800px) {
     h1 { font-size: 1.7rem; }
     .egg-panel { width: 95vw; }
@@ -355,8 +444,35 @@
 <h1>Hatch Battles</h1>
 <p class="subtitle">Craft four eggs. Two vs two.</p>
 <div class="dual-container" id="dualContainer"></div>
-<button class="randomise-all" id="randomiseAll">Randomise All</button>
+<div class="btn-row">
+  <button class="randomise-all" id="randomiseAll">Randomise All</button>
+  <button class="party-btn" id="createPartyBtn">Create Party</button>
+  <button class="party-btn" id="joinPartyBtn">Join Party</button>
+</div>
 <button class="hatch-btn" id="hatchBtn">Hatch All!</button>
+
+<div class="party-overlay" id="createOverlay">
+  <div class="party-panel">
+    <button class="party-close" id="createClose">&times;</button>
+    <div class="party-title">Create Party</div>
+    <div class="party-desc">Pick your team first, then click Create. Send the code to your opponent.</div>
+    <div class="party-code" id="partyCode" style="display:none;"></div>
+    <button class="party-action" id="createGoBtn">Create</button>
+    <button class="party-action" id="copyPartyBtn" style="display:none;">Copy Code</button>
+    <div class="party-status" id="createStatus"></div>
+  </div>
+</div>
+
+<div class="party-overlay" id="joinOverlay">
+  <div class="party-panel">
+    <button class="party-close" id="joinClose">&times;</button>
+    <div class="party-title">Join Party</div>
+    <div class="party-desc">Enter your opponent's code. Then pick your team and hatch!</div>
+    <input class="party-input" id="joinInput" placeholder="CODE" maxlength="8">
+    <button class="party-action" id="joinGoBtn">Join</button>
+    <div class="party-status" id="joinStatus"></div>
+  </div>
+</div>
 <div class="results-row" id="resultsRow">
   <div class="result-card" id="result0">
     <div class="result-animal-svg" id="resultSvg0"></div>
@@ -388,12 +504,19 @@
     <button class="speed-btn" data-speed="4">4x</button>
     <button class="rematch-btn" id="rematchBtn">Rematch</button>
   </div>
+  <div class="round-score" id="roundScore">
+    <span class="score-t1" id="scoreT1">0</span>
+    <span class="score-label">Best of 3</span>
+    <span class="score-t2" id="scoreT2">0</span>
+  </div>
   <div class="battle-stage" id="battleStage">
     <div class="stage-ground"></div>
   </div>
+  <div class="arena-round" id="arenaRound" style="display:none;"></div>
   <div class="arena-winner" id="arenaWinner" style="display:none;"></div>
 </div>
 <button class="try-again-btn" id="tryAgainBtn" style="display:none;">Make New Eggs</button>
+<button class="mode-toggle" id="modeToggle">Mode: 2v2</button>
 <button class="mult-toggle on" id="multToggle">RNG: ON</button>
 <button class="matchup-toggle" id="matchupToggle">Matchup Chart</button>
 <div class="matchup-overlay" id="matchupOverlay">
@@ -413,41 +536,45 @@
 
 <script>
 // ===== ANIMALS (with realistic colours) =====
+// Key: "size-density-type" where type: 0=Ocean, 1=Desert, 2=Jungle, 3=Air
 const ANIMALS = {
-  "0-0-0": { name: "Slug",           m: '#8B7D6B', a: '#C4B7A6' },
-  "0-0-1": { name: "Hummingbird",    m: '#2EAD65', a: '#E74C3C' },
-  "0-0-2": { name: "Sugar Glider",   m: '#9E9E9E', a: '#F5E6CA' },
-  "0-0-3": { name: "Butterfly",      m: '#E67E22', a: '#222222' },
-  "0-1-0": { name: "Clownfish",      m: '#FF6B00', a: '#FFFFFF' },
-  "0-1-1": { name: "Robin",          m: '#7B6249', a: '#E25822' },
+  // Small (6 units)
+  "0-0-0": { name: "Clownfish",      m: '#FF6B00', a: '#FFFFFF' },
+  "0-0-1": { name: "Scorpion",       m: '#C4A032', a: '#8B6C4A' },
+  "0-0-2": { name: "Dart Frog",      m: '#3498DB', a: '#E74C3C' },
+  "0-0-3": { name: "Hummingbird",    m: '#2EAD65', a: '#E74C3C' },
+  "0-1-0": { name: "Seahorse",       m: '#D4A017', a: '#E8C547' },
+  "0-1-1": { name: "Meerkat",        m: '#D4A373', a: '#F5E0C3' },
   "0-1-2": { name: "Cat",            m: '#D4853B', a: '#F5E0C3' },
-  "0-1-3": { name: "Ant",            m: '#5C2018', a: '#8B4513' },
-  "0-2-0": { name: "Seahorse",       m: '#D4A017', a: '#E8C547' },
-  "0-2-1": { name: "Penguin",        m: '#1C1C1C', a: '#F5F5F5' },
+  "0-1-3": { name: "Robin",          m: '#7B6249', a: '#E25822' },
+  "0-2-0": { name: "Pufferfish",     m: '#D4A017', a: '#8B6C4A' },
+  "0-2-1": { name: "Beetle",         m: '#1A5C1A', a: '#0E380E' },
   "0-2-2": { name: "Hedgehog",       m: '#8B6C4A', a: '#C4A87C' },
-  "0-2-3": { name: "Beetle",         m: '#1A5C1A', a: '#0E380E' },
-  "1-0-0": { name: "Flying Fish",    m: '#7B9DB7', a: '#B8D4E3' },
+  "0-2-3": { name: "Bat",            m: '#2C2C2C', a: '#5C5C5C' },
+  // Medium (3 units)
+  "1-0-0": { name: "Dolphin",        m: '#7B9DB7', a: '#B8D4E3' },
   "1-0-1": { name: "Falcon",         m: '#5D6D7E', a: '#F5E6CA' },
   "1-0-2": { name: "Deer",           m: '#A0785A', a: '#F5E6CA' },
   "1-0-3": { name: "Dragonfly",      m: '#3498DB', a: '#2ECC71' },
   "1-1-0": { name: "Salmon",         m: '#C77B8B', a: '#E8A0B0' },
   "1-1-1": { name: "Human",          m: '#D2A67D', a: '#4A3728' },
   "1-1-2": { name: "Wolf",           m: '#6E6E6E', a: '#B0B0B0' },
-  "1-1-3": { name: "Mantis",         m: '#4CAF50', a: '#81C784' },
+  "1-1-3": { name: "Eagle",          m: '#5C4033', a: '#F5F5F0' },
   "1-2-0": { name: "Moray Eel",      m: '#3D5C3A', a: '#8B9862' },
   "1-2-1": { name: "Cassowary",      m: '#1A1A2E', a: '#3498DB' },
   "1-2-2": { name: "Bear",           m: '#8B5E3C', a: '#D2B48C' },
-  "1-2-3": { name: "Tortoise",       m: '#3D5C3A', a: '#8B6C4A' },
+  "1-2-3": { name: "Swan",           m: '#F8F8FF', a: '#E67E22' },
+  // Large (1 unit)
   "2-0-0": { name: "Manta Ray",      m: '#2C3E50', a: '#ECF0F1' },
   "2-0-1": { name: "Flamingo",       m: '#FF69B4', a: '#FF1493' },
   "2-0-2": { name: "Giraffe",        m: '#D4A55A', a: '#8B5E3C' },
   "2-0-3": { name: "Atlas Moth",     m: '#A0522D', a: '#F5DEB3' },
   "2-1-0": { name: "Shark",          m: '#6B7B8D', a: '#D5DDE5' },
-  "2-1-1": { name: "Human",          m: '#D2A67D', a: '#4A3728' },
+  "2-1-1": { name: "Camel",          m: '#C4A373', a: '#8B6C4A' },
   "2-1-2": { name: "Horse",          m: '#8B5A2B', a: '#4A3728' },
-  "2-1-3": { name: "Stick Insect",   m: '#6B4423', a: '#5D7B3A' },
+  "2-1-3": { name: "Ostrich",        m: '#7B6B5D', a: '#F0E6D3' },
   "2-2-0": { name: "Anaconda",       m: '#3D5C2A', a: '#8B7355' },
-  "2-2-1": { name: "Ostrich",        m: '#7B6B5D', a: '#F0E6D3' },
+  "2-2-1": { name: "Tortoise",       m: '#3D5C3A', a: '#8B6C4A' },
   "2-2-2": { name: "Elephant",       m: '#8D8D8D', a: '#5C5C5C' },
   "2-2-3": { name: "Hercules Beetle",m: '#4A3728', a: '#C4A032' },
 };
@@ -491,6 +618,13 @@ const ANIMAL_ADJECTIVES = {
   "Atlas Moth": ['dusty','fuzzy','fluttery','grand','velvety','ghostly','misty','musty'],
   "Stick Insect": ['twiggy','lanky','skinny','gangly','bony','sneaky','tricky','sticky'],
   "Hercules Beetle": ['horny','brawny','mighty','hulky','beefy','bulky','burly','buff'],
+  "Scorpion": ['stingy','snappy','skittery','sandy','crusty','crabby','pinchy','spiky'],
+  "Dart Frog": ['toxic','zippy','flashy','slimy','jumpy','bouncy','bright','tiny'],
+  "Meerkat": ['nosy','perky','diggy','sandy','alert','twitchy','squinty','scrappy'],
+  "Pufferfish": ['puffy','spiky','grumpy','bloaty','round','squishy','snappy','chubby'],
+  "Bat": ['swoopy','shadowy','squeaky','flappy','spooky','fuzzy','fangy','sneaky'],
+  "Dolphin": ['flippy','splashy','chatty','speedy','slippery','bouncy','smiley','playful'],
+  "Camel": ['humpy','dusty','grumpy','ploddy','sandy','spitty','lanky','stubborn'],
 };
 
 // Special overrides for specific names
@@ -1032,6 +1166,79 @@ function drawAnimal(name, m, a) {
       <path d="M40 90 L36 92" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
       <path d="M60 90 L64 92" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
     `,
+    "Scorpion": `
+      <ellipse cx="50" cy="55" rx="16" ry="12" fill="${m}"/>
+      <circle cx="50" cy="42" r="8" fill="${m}"/>
+      <circle cx="47" cy="40" r="2.5" fill="#fff"/><circle cx="47" cy="40" r="1.5" fill="#111"/>
+      <circle cx="53" cy="40" r="2.5" fill="#fff"/><circle cx="53" cy="40" r="1.5" fill="#111"/>
+      <path d="M38 48 L24 40 L20 34" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M62 48 L76 40 L80 34" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M50 67 Q50 78 45 85 Q40 90 38 84 Q36 78 42 75" stroke="${a}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="42" cy="74" r="3" fill="${a}"/>
+    `,
+    "Dart Frog": `
+      <ellipse cx="50" cy="55" rx="20" ry="16" fill="${m}"/>
+      <ellipse cx="50" cy="58" rx="14" ry="10" fill="${a}" opacity="0.5"/>
+      <circle cx="42" cy="42" r="7" fill="${m}"/>
+      <circle cx="58" cy="42" r="7" fill="${m}"/>
+      <circle cx="42" cy="40" r="4" fill="#fff"/><circle cx="42" cy="40" r="2.5" fill="#111"/>
+      <circle cx="58" cy="40" r="4" fill="#fff"/><circle cx="58" cy="40" r="2.5" fill="#111"/>
+      <path d="M36 68 L28 78" stroke="${m}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M64 68 L72 78" stroke="${m}" stroke-width="4" stroke-linecap="round"/>
+    `,
+    "Meerkat": `
+      <ellipse cx="50" cy="55" rx="12" ry="18" fill="${m}"/>
+      <circle cx="50" cy="35" r="11" fill="${m}"/>
+      <circle cx="50" cy="38" r="8" fill="${lt(m,20)}"/>
+      <circle cx="45" cy="33" r="3" fill="#fff"/><circle cx="45" cy="33" r="1.5" fill="#111"/>
+      <circle cx="55" cy="33" r="3" fill="#fff"/><circle cx="55" cy="33" r="1.5" fill="#111"/>
+      <ellipse cx="50" cy="38" rx="3" ry="2" fill="${dk(m)}"/>
+      <circle cx="50" cy="26" r="4" fill="${a}" opacity="0.3"/>
+      <path d="M44 72 L42 84" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M56 72 L58 84" stroke="${dk(m)}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    "Pufferfish": `
+      <circle cx="50" cy="50" r="24" fill="${m}"/>
+      <circle cx="50" cy="50" r="18" fill="${lt(m,20)}"/>
+      <circle cx="42" cy="44" r="4" fill="#fff"/><circle cx="42" cy="44" r="2" fill="#111"/>
+      <circle cx="58" cy="44" r="4" fill="#fff"/><circle cx="58" cy="44" r="2" fill="#111"/>
+      <ellipse cx="50" cy="54" rx="4" ry="3" fill="${a}"/>
+      <line x1="50" y1="26" x2="50" y2="18" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="30" y1="40" x2="22" y2="36" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="70" y1="40" x2="78" y2="36" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="34" y1="64" x2="26" y2="70" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+      <line x1="66" y1="64" x2="74" y2="70" stroke="${a}" stroke-width="2" stroke-linecap="round"/>
+    `,
+    "Bat": `
+      <circle cx="50" cy="42" r="10" fill="${m}"/>
+      <circle cx="44" cy="40" r="3.5" fill="#fff"/><circle cx="44" cy="40" r="2" fill="#111"/>
+      <circle cx="56" cy="40" r="3.5" fill="#fff"/><circle cx="56" cy="40" r="2" fill="#111"/>
+      <polygon points="42,34 40,26 46,32" fill="${m}"/>
+      <polygon points="58,34 60,26 54,32" fill="${m}"/>
+      <path d="M40 44 Q20 28 8 42 Q14 40 20 44 Q16 36 24 42 Q20 34 30 40" fill="${a}" opacity="0.8"/>
+      <path d="M60 44 Q80 28 92 42 Q86 40 80 44 Q84 36 76 42 Q80 34 70 40" fill="${a}" opacity="0.8"/>
+      <ellipse cx="50" cy="50" rx="6" ry="8" fill="${m}"/>
+    `,
+    "Dolphin": `
+      <path d="M15 50 Q25 38 50 36 Q75 38 88 50 Q75 60 50 62 Q25 60 15 50Z" fill="${m}"/>
+      <path d="M20 50 Q30 42 50 40 Q70 42 82 50 Q70 56 50 58 Q30 56 20 50Z" fill="${lt(m,20)}"/>
+      <path d="M52 36 Q56 28 60 32" fill="${a}" opacity="0.6"/>
+      <polygon points="82,48 96,40 94,54" fill="${m}"/>
+      <circle cx="30" cy="46" r="3.5" fill="#fff"/><circle cx="31" cy="46" r="2" fill="#111"/>
+      <path d="M40 52 Q50 58 60 52" stroke="${lt(m,30)}" stroke-width="1.5" fill="none"/>
+    `,
+    "Camel": `
+      <ellipse cx="52" cy="48" rx="24" ry="16" fill="${m}"/>
+      <path d="M42 36 Q46 28 50 34 Q54 28 58 36" fill="${a}" opacity="0.5"/>
+      <path d="M36 42 Q30 26 32 14" stroke="${m}" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="12" r="9" fill="${m}"/>
+      <circle cx="28" cy="10" r="3" fill="#fff"/><circle cx="28" cy="10" r="1.5" fill="#111"/>
+      <polygon points="26,14 18,12 26,18" fill="${dk(m)}"/>
+      <path d="M38 62 L34 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M50 62 L48 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M58 62 L60 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M68 62 L72 88" stroke="${dk(m)}" stroke-width="4" stroke-linecap="round"/>
+    `,
   };
   return `<svg viewBox="-5 -10 110 115" xmlns="http://www.w3.org/2000/svg">${d[name] || `<circle cx="50" cy="50" r="30" fill="${m}"/>`}</svg>`;
 }
@@ -1039,14 +1246,17 @@ function drawAnimal(name, m, a) {
 // ===== STATE =====
 const sizeNames = ['Small','Medium','Large'];
 const densityNames = ['Light','Normal','Heavy'];
-const limbLabels = ['1 limb','2 limbs','4 limbs','6 limbs'];
+const limbLabels = ['Ocean','Desert','Jungle','Air'];
+// Type advantage: 0=Ocean beats 1=Desert, 1=Desert beats 2=Jungle, 2=Jungle beats 3=Air, 3=Air beats 0=Ocean
+const TYPE_BEATS = { 0: 1, 1: 2, 2: 3, 3: 0 };
 
 // Stats by size: [hp, count]
-const SIZE_STATS = [[15, 6], [50, 3], [350, 1]];
+const SIZE_STATS = [[10, 6], [50, 3], [350, 1]];
 // Stats by density: [attackSpeed (s), damage]
-const DENSITY_STATS = [[1, 4], [3, 13], [6, 30]];
+// [attackSpeed, damage, hpMultiplier]
+const DENSITY_STATS = [[0.8, 5, 0.7], [2, 12, 1], [6, 40, 1.4]];
 // Max values for bar scaling
-const MAX_HP = 350, MAX_DMG = 30, MAX_SPD = 6;
+const MAX_HP = 490, MAX_DMG = 40, MAX_SPD = 6;
 
 const panels = [
   { size: 1, density: 1, limbs: 2 },
@@ -1056,6 +1266,7 @@ const panels = [
 ];
 
 let isHatching = false;
+let gameMode = '1v1'; // '1v1' or '2v2'
 
 // ===== BUILD UI =====
 const dualContainer = document.getElementById('dualContainer');
@@ -1111,12 +1322,12 @@ panels.forEach((state, idx) => {
           <button class="opt-btn${state.density===2?' selected':''}" data-val="2">Heavy</button>
         </div>
       </div>
-      <div class="control-group"><label>Number of Limbs</label>
+      <div class="control-group"><label>Type</label>
         <div class="option-row" id="limb${idx}">
-          <button class="limb-btn${state.limbs===0?' selected':''}" data-val="0"><span class="ln">1</span><span class="ld">fish/snakes</span></button>
-          <button class="limb-btn${state.limbs===1?' selected':''}" data-val="1"><span class="ln">2</span><span class="ld">birds</span></button>
-          <button class="limb-btn${state.limbs===2?' selected':''}" data-val="2"><span class="ln">4</span><span class="ld">mammals</span></button>
-          <button class="limb-btn${state.limbs===3?' selected':''}" data-val="3"><span class="ln">6</span><span class="ld">insects</span></button>
+          <button class="limb-btn${state.limbs===0?' selected':''}" data-val="0"><span class="ln">🌊</span><span class="ld">Ocean</span></button>
+          <button class="limb-btn${state.limbs===1?' selected':''}" data-val="1"><span class="ln">🏜️</span><span class="ld">Desert</span></button>
+          <button class="limb-btn${state.limbs===2?' selected':''}" data-val="2"><span class="ln">🌿</span><span class="ld">Jungle</span></button>
+          <button class="limb-btn${state.limbs===3?' selected':''}" data-val="3"><span class="ln">🌪️</span><span class="ld">Air</span></button>
         </div>
       </div>
     </div>
@@ -1137,8 +1348,30 @@ panels.forEach((state, idx) => {
 
 // Randomise all
 document.getElementById('randomiseAll').addEventListener('click', () => {
-  [0,1,2,3].forEach(i => randomise(i));
+  if (gameMode === '2v2') [0,1,2,3].forEach(i => randomise(i));
+  else [0,2].forEach(i => randomise(i));
 });
+
+// Mode toggle
+document.getElementById('modeToggle').addEventListener('click', () => {
+  gameMode = gameMode === '2v2' ? '1v1' : '2v2';
+  document.getElementById('modeToggle').textContent = `Mode: ${gameMode}`;
+  applyMode();
+});
+
+function activePanels() {
+  return gameMode === '1v1' ? [0, 2] : [0, 1, 2, 3];
+}
+
+function applyMode() {
+  const is1v1 = gameMode === '1v1';
+  document.getElementById('panel1').style.display = is1v1 ? 'none' : '';
+  document.getElementById('panel3').style.display = is1v1 ? 'none' : '';
+  document.querySelector('.subtitle').textContent = is1v1 ? 'Craft two eggs. One vs one.' : 'Craft four eggs. Two vs two.';
+  document.getElementById('hatchBtn').textContent = is1v1 ? 'Hatch Both!' : 'Hatch All!';
+  document.getElementById('modeToggle').textContent = `Mode: ${gameMode}`;
+}
+applyMode();
 
 function wireButtons(rowId, cls, setter) {
   const row = document.getElementById(rowId);
@@ -1260,20 +1493,22 @@ function startHatch() {
   if (isHatching) return;
   isHatching = true;
   document.getElementById('hatchBtn').disabled = true;
-  const eggs = [0,1,2,3].map(i => document.getElementById(`egg${i}`));
+  const eggs = activePanels().map(i => document.getElementById(`egg${i}`));
   eggs.forEach(e => e.classList.add('wobbling'));
 
+  const ap = activePanels();
+
   setTimeout(() => {
-    [0,1,2,3].forEach(i => { generateCracks(document.getElementById(`cracks${i}`)); document.getElementById(`cracks${i}`).style.opacity = '1'; });
+    ap.forEach(i => { generateCracks(document.getElementById(`cracks${i}`)); document.getElementById(`cracks${i}`).style.opacity = '1'; });
   }, 1200);
 
   setTimeout(() => {
-    [0,1,2,3].forEach(i => generateCracks(document.getElementById(`cracks${i}`)));
+    ap.forEach(i => generateCracks(document.getElementById(`cracks${i}`)));
   }, 1800);
 
   setTimeout(() => {
-    [0,1,2,3].forEach(i => {
-      const egg = eggs[i];
+    ap.forEach(i => {
+      const egg = document.getElementById(`egg${i}`);
       const rect = egg.getBoundingClientRect();
       const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
       egg.classList.remove('wobbling');
@@ -1281,10 +1516,12 @@ function startHatch() {
       spawnShellFragments(cx, cy, anim.m, anim.a);
       spawnParticles(cx, cy);
     });
+    revealOpponent();
     document.getElementById('dualContainer').style.display = 'none';
     document.getElementById('hatchBtn').style.display = 'none';
-    document.getElementById('randomiseAll').style.display = 'none';
-    [0,1,2,3].forEach(i => {
+    document.querySelector('.btn-row').style.display = 'none';
+    document.getElementById('modeToggle').style.display = 'none';
+    ap.forEach(i => {
       const s = panels[i];
       const key = `${s.size}-${s.density}-${s.limbs}`;
       const animal = ANIMALS[key];
@@ -1293,8 +1530,9 @@ function startHatch() {
       document.getElementById(`resultName${i}`).textContent = animal.name;
 
       // Stats
-      const [hp, count] = SIZE_STATS[s.size];
-      const [atkSpd, dmg] = DENSITY_STATS[s.density];
+      const [baseHp, count] = SIZE_STATS[s.size];
+      const [atkSpd, dmg, hpMult] = DENSITY_STATS[s.density];
+      const hp = Math.round(baseHp * hpMult);
       const statsEl = document.getElementById(`resultStats${i}`);
       const spdPercent = ((MAX_SPD - atkSpd + 0.3) / MAX_SPD) * 100;
       statsEl.innerHTML = `
@@ -1364,6 +1602,8 @@ let battleSpeed = 1;
 let battleTeams = null;
 let battleTime = 0;
 let rngEnabled = true;
+let roundScore = [0, 0];
+let currentRound = 0;
 
 document.getElementById('multToggle').addEventListener('click', () => {
   rngEnabled = !rngEnabled;
@@ -1389,26 +1629,46 @@ document.getElementById('arenaControls').addEventListener('click', e => {
 
 function startBattle() {
   // Hide results & battle button
-  [0,1,2,3].forEach(i => document.getElementById(`result${i}`).classList.remove('visible'));
+  activePanels().forEach(i => document.getElementById(`result${i}`).classList.remove('visible'));
   document.getElementById('battleBtn').style.display = 'none';
   document.getElementById('tryAgainBtn').style.display = 'none';
   document.getElementById('arenaWinner').style.display = 'none';
-  battleTime = 0;
+  document.getElementById('arenaRound').style.display = 'none';
+  roundScore = [0, 0];
+  currentRound = 0;
+  document.getElementById('scoreT1').textContent = '0';
+  document.getElementById('scoreT2').textContent = '0';
 
   const arena = document.getElementById('battleArena');
   arena.classList.add('visible');
+  startRound();
+}
 
-  // Build teams: panels 0+1 = team 0, panels 2+3 = team 1
-  const teamPanels = [[0,1],[2,3]];
+function startRound() {
+  if (battleInterval) { clearInterval(battleInterval); battleInterval = null; }
+  battleTime = 0;
+  currentRound++;
+  document.getElementById('arenaRound').textContent = `Round ${currentRound}`;
+  document.getElementById('arenaRound').style.display = '';
+  document.getElementById('arenaWinner').style.display = 'none';
+
+  // Build teams based on mode
+  const teamPanels = gameMode === '1v1' ? [[0],[2]] : [[0,1],[2,3]];
   battleTeams = teamPanels.map((panelIdxs, teamIdx) => {
     const units = [];
     let unitCounter = 0;
+    // Check for same-type synergy in 2v2
+    const types = panelIdxs.map(pi => panels[pi].limbs);
+    const hasSynergy = types.length > 1 && types[0] === types[1];
+
     for (const pi of panelIdxs) {
     const s = panels[pi];
     const key = `${s.size}-${s.density}-${s.limbs}`;
     const animal = ANIMALS[key];
-    const [hp, count] = SIZE_STATS[s.size];
-    const [atkSpd, dmg] = DENSITY_STATS[s.density];
+    const [baseHp, count] = SIZE_STATS[s.size];
+    const [atkSpd, dmg, hpMult] = DENSITY_STATS[s.density];
+    let hp = Math.round(baseHp * hpMult);
+    if (hasSynergy) hp = Math.round(hp * 1.2); // 20% HP boost for same-type teammates
     const usedNames = {};
     for (let u = 0; u < count; u++) {
       let nick = generateName(animal.name, u);
@@ -1431,6 +1691,7 @@ function startBattle() {
         ac: animal.a,
         team: teamIdx,
         idx: unitCounter,
+        type: s.limbs,
       });
       unitCounter++;
     }
@@ -1483,7 +1744,7 @@ function startBattle() {
   function assignTarget(unit) {
     const enemies = getAliveEnemies(unit.team);
     if (enemies.length === 0) { unit.target = null; return; }
-    unit.target = enemies[0];
+    unit.target = enemies[Math.floor(Math.random() * enemies.length)];
   }
 
   const TICK = 1/30;
@@ -1561,6 +1822,8 @@ function startBattle() {
             else if (roll < 20) { mult = 0.85; rollType = 'normal'; }
             else if (roll < 30) { mult = 1.15; rollType = 'normal'; }
           }
+          // Type advantage: 20% damage boost
+          if (TYPE_BEATS[unit.type] === target.type) mult *= 1.2;
           const finalDmg = Math.round(unit.dmg * mult);
           target.hp -= finalDmg;
 
@@ -1611,14 +1874,26 @@ function startBattle() {
       clearInterval(battleInterval);
       battleInterval = null;
       if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
-      const winTeam = team0alive > 0 ? 1 : 2;
       const winIdx = team0alive > 0 ? 0 : 1;
-      const remaining = Math.max(team0alive, team1alive);
-      const winNames = [...new Set(teams[winIdx].filter(u => u.alive).map(u => u.name))].join(' & ');
-      const winnerEl = document.getElementById('arenaWinner');
-      winnerEl.textContent = `Team ${winTeam} wins! ${winNames} (${remaining} left) victorious!`;
-      winnerEl.style.display = '';
-      document.getElementById('tryAgainBtn').style.display = '';
+      roundScore[winIdx]++;
+      document.getElementById('scoreT1').textContent = roundScore[0];
+      document.getElementById('scoreT2').textContent = roundScore[1];
+
+      // Check if someone won best of 3
+      if (roundScore[0] >= 2 || roundScore[1] >= 2) {
+        const finalWinner = roundScore[0] >= 2 ? 0 : 1;
+        const winNames = [...new Set(teams[finalWinner].map(u => u.name))].join(' & ');
+        const winnerEl = document.getElementById('arenaWinner');
+        winnerEl.textContent = `Team ${finalWinner + 1} wins ${roundScore[0]}-${roundScore[1]}! ${winNames} victorious!`;
+        winnerEl.style.display = '';
+        document.getElementById('arenaRound').style.display = 'none';
+        document.getElementById('tryAgainBtn').style.display = '';
+      } else {
+        // Next round after a short pause
+        const roundEl = document.getElementById('arenaRound');
+        roundEl.textContent = `Team ${winIdx + 1} wins round ${currentRound}!`;
+        setTimeout(() => startRound(), 1500);
+      }
     }
   }, TICK * 1000);
 }
@@ -1631,11 +1906,15 @@ document.getElementById('tryAgainBtn').addEventListener('click', () => {
   document.getElementById('tryAgainBtn').style.display = 'none';
   document.getElementById('battleArena').classList.remove('visible');
   document.getElementById('arenaWinner').style.display = 'none';
+  document.getElementById('arenaRound').style.display = 'none';
   document.getElementById('dualContainer').style.display = '';
   document.getElementById('hatchBtn').style.display = '';
-  document.getElementById('randomiseAll').style.display = '';
+  document.querySelector('.btn-row').style.display = '';
+  document.getElementById('modeToggle').style.display = '';
+  revealOpponent();
   document.getElementById('hatchBtn').disabled = false;
   isHatching = false;
+  applyMode();
   [0,1,2,3].forEach(i => {
     document.getElementById(`cracks${i}`).style.opacity = '0';
     document.getElementById(`cracks${i}`).innerHTML = '';
@@ -1645,8 +1924,164 @@ document.getElementById('tryAgainBtn').addEventListener('click', () => {
 
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' && !isHatching) { e.preventDefault(); startHatch(); }
-  if (e.code === 'Escape') document.getElementById('matchupOverlay').classList.remove('visible');
+  if (e.code === 'Escape') {
+    document.getElementById('matchupOverlay').classList.remove('visible');
+    document.getElementById('createOverlay').classList.remove('visible');
+    document.getElementById('joinOverlay').classList.remove('visible');
+  }
 });
+
+// ===== PARTY SYSTEM =====
+let partyMode = false; // true when opponent is loaded and hidden
+
+function encodeTeam(panelIdxs) {
+  let code = panelIdxs.length === 1 ? '1' : '2';
+  for (const i of panelIdxs) {
+    code += panels[i].size.toString() + panels[i].density.toString() + panels[i].limbs.toString();
+  }
+  return code;
+}
+
+function decodeTeam(code) {
+  code = code.trim().toUpperCase();
+  if (!code || code.length < 4) return null;
+  const mode = code[0] === '1' ? '1v1' : '2v2';
+  const eggs = [];
+  const digits = code.slice(1);
+  for (let i = 0; i < digits.length; i += 3) {
+    if (i + 2 >= digits.length) return null;
+    const size = parseInt(digits[i]);
+    const density = parseInt(digits[i+1]);
+    const type = parseInt(digits[i+2]);
+    if (isNaN(size) || isNaN(density) || isNaN(type)) return null;
+    if (size > 2 || density > 2 || type > 3) return null;
+    eggs.push({ size, density, limbs: type });
+  }
+  return { mode, eggs };
+}
+
+function loadOpponent(data) {
+  gameMode = data.mode;
+  applyMode();
+  const targetPanels = gameMode === '1v1' ? [2] : [2, 3];
+  data.eggs.forEach((egg, i) => {
+    if (i < targetPanels.length) {
+      const pi = targetPanels[i];
+      panels[pi].size = egg.size;
+      panels[pi].density = egg.density;
+      panels[pi].limbs = egg.limbs;
+      document.getElementById(`size${pi}`).querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.size));
+      document.getElementById(`dens${pi}`).querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.density));
+      document.getElementById(`limb${pi}`).querySelectorAll('.limb-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.val) === egg.limbs));
+      updateEgg(pi);
+    }
+  });
+  hideOpponent();
+}
+
+function hideOpponent() {
+  partyMode = true;
+  const opPanels = gameMode === '1v1' ? [2] : [2, 3];
+  opPanels.forEach(pi => {
+    const panel = document.getElementById(`panel${pi}`);
+    panel.classList.add('hidden-opponent');
+    if (!panel.querySelector('.opponent-mask')) {
+      const mask = document.createElement('div');
+      mask.className = 'opponent-mask';
+      mask.textContent = '? Opponent ?';
+      panel.appendChild(mask);
+    }
+  });
+}
+
+function revealOpponent() {
+  partyMode = false;
+  [0,1,2,3].forEach(pi => {
+    const panel = document.getElementById(`panel${pi}`);
+    panel.classList.remove('hidden-opponent');
+    const mask = panel.querySelector('.opponent-mask');
+    if (mask) mask.remove();
+  });
+}
+
+// Create Party
+document.getElementById('createPartyBtn').addEventListener('click', () => {
+  document.getElementById('partyCode').style.display = 'none';
+  document.getElementById('copyPartyBtn').style.display = 'none';
+  document.getElementById('createStatus').textContent = '';
+  document.getElementById('createGoBtn').style.display = '';
+  document.getElementById('createOverlay').classList.add('visible');
+});
+
+document.getElementById('createGoBtn').addEventListener('click', () => {
+  const idxs = gameMode === '1v1' ? [0] : [0, 1];
+  const code = encodeTeam(idxs);
+  document.getElementById('partyCode').textContent = code;
+  document.getElementById('partyCode').style.display = '';
+  document.getElementById('copyPartyBtn').style.display = '';
+  document.getElementById('createGoBtn').style.display = 'none';
+  document.getElementById('createStatus').textContent = 'Send this code to your opponent!';
+  document.getElementById('createStatus').style.color = '#4cc9f0';
+});
+
+document.getElementById('copyPartyBtn').addEventListener('click', () => {
+  const code = document.getElementById('partyCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    document.getElementById('createStatus').textContent = 'Copied!';
+    document.getElementById('createStatus').style.color = '#2ecc71';
+  }).catch(() => {
+    document.getElementById('createStatus').textContent = 'Select the code and copy manually';
+    document.getElementById('createStatus').style.color = '#e67e22';
+  });
+});
+
+document.getElementById('createClose').addEventListener('click', () => {
+  document.getElementById('createOverlay').classList.remove('visible');
+});
+document.getElementById('createOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+});
+
+// Join Party
+document.getElementById('joinPartyBtn').addEventListener('click', () => {
+  document.getElementById('joinInput').value = '';
+  document.getElementById('joinStatus').textContent = '';
+  document.getElementById('joinOverlay').classList.add('visible');
+  document.getElementById('joinInput').focus();
+});
+
+document.getElementById('joinGoBtn').addEventListener('click', () => {
+  const code = document.getElementById('joinInput').value.trim();
+  const data = decodeTeam(code);
+  if (!data) {
+    document.getElementById('joinStatus').textContent = 'Invalid code!';
+    document.getElementById('joinStatus').style.color = '#e74c3c';
+    return;
+  }
+  loadOpponent(data);
+  document.getElementById('joinStatus').textContent = 'Opponent loaded! Pick your team and hatch.';
+  document.getElementById('joinStatus').style.color = '#2ecc71';
+  setTimeout(() => {
+    document.getElementById('joinOverlay').classList.remove('visible');
+  }, 1000);
+});
+
+document.getElementById('joinClose').addEventListener('click', () => {
+  document.getElementById('joinOverlay').classList.remove('visible');
+});
+document.getElementById('joinOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+});
+
+// URL code support
+(function checkUrlCode() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('c');
+  if (code) {
+    const data = decodeTeam(code);
+    if (data) loadOpponent(data);
+  }
+})();
 
 // ===== MATCHUP CHART =====
 document.getElementById('matchupToggle').addEventListener('click', () => {
@@ -1661,11 +2096,15 @@ document.getElementById('matchupOverlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
 });
 
-function simBattle(sA, dA, sB, dB) {
-  const [hpA, countA] = SIZE_STATS[sA];
-  const [spdA, dmgA] = DENSITY_STATS[dA];
-  const [hpB, countB] = SIZE_STATS[sB];
-  const [spdB, dmgB] = DENSITY_STATS[dB];
+function simBattle(sA, dA, tA, sB, dB, tB) {
+  const [baseHpA, countA] = SIZE_STATS[sA];
+  const [spdA, baseDmgA, hpMultA] = DENSITY_STATS[dA];
+  const hpA = Math.round(baseHpA * hpMultA);
+  const dmgA = TYPE_BEATS[tA] === tB ? Math.round(baseDmgA * 1.2) : baseDmgA;
+  const [baseHpB, countB] = SIZE_STATS[sB];
+  const [spdB, baseDmgB, hpMultB] = DENSITY_STATS[dB];
+  const hpB = Math.round(baseHpB * hpMultB);
+  const dmgB = TYPE_BEATS[tB] === tA ? Math.round(baseDmgB * 1.2) : baseDmgB;
 
   const teamA = []; for (let i = 0; i < countA; i++) teamA.push({ hp: hpA, timer: spdA });
   const teamB = []; for (let i = 0; i < countB; i++) teamB.push({ hp: hpB, timer: spdB });
@@ -1704,8 +2143,9 @@ function buildMatchupTable() {
   const profiles = [];
   for (let s = 0; s < 3; s++) {
     for (let d = 0; d < 3; d++) {
-      const [hp, count] = SIZE_STATS[s];
-      const [spd, dmg] = DENSITY_STATS[d];
+      const [baseHp, count] = SIZE_STATS[s];
+      const [spd, dmg, hpMult] = DENSITY_STATS[d];
+      const hp = Math.round(baseHp * hpMult);
       profiles.push({ s, d, label: `${sizeNames[s]}/${densityNames[d]}`, detail: `${count}x ${hp}hp ${dmg}dmg ${spd}s` });
     }
   }
@@ -1720,7 +2160,7 @@ function buildMatchupTable() {
       if (i === j) {
         html += '<td class="mirror">Draw</td>';
       } else {
-        const r = simBattle(profiles[i].s, profiles[i].d, profiles[j].s, profiles[j].d);
+        const r = simBattle(profiles[i].s, profiles[i].d, 0, profiles[j].s, profiles[j].d, 0);
         if (r.aLeft > 0) {
           html += `<td class="win1" title="${profiles[i].label} beats ${profiles[j].label}">${r.aLeft} left / ${r.time}s</td>`;
         } else if (r.bLeft > 0) {
